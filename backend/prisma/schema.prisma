@@ -1,0 +1,91 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             String           @id @default(uuid())
+  name           String
+  phone          String           @unique
+  email          String           @unique
+  aadhaar_hash   String           // Encrypted using AES-256-GCM
+  pan_hash       String           // Encrypted using AES-256-GCM
+  language       String           @default("English")
+  created_at     DateTime         @default(now())
+  
+  family_members FamilyMember[]
+  deceaseds      DeceasedRecord[]
+  claims         Claim[]
+  ai_logs        AiLog[]
+}
+
+model FamilyMember {
+  id         String   @id @default(uuid())
+  user_id    String
+  name       String
+  relation   String   // e.g. Mother, Wife, Son, Daughter
+  
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model DeceasedRecord {
+  id             String   @id @default(uuid())
+  user_id        String
+  death_date     DateTime
+  certificate_id String   @unique
+  
+  user           User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  assets         Asset[]
+}
+
+model Asset {
+  id             String         @id @default(uuid())
+  deceased_id    String
+  type           String         // Bank Deposit, LIC Policy, Mutual Fund
+  institution    String         // e.g. State Bank of India, LIC of India
+  amount         Float          // Principal amount
+  status         String         // Dormant, Verified, Claimed, Disputed
+  created_at     DateTime       @default(now())
+  
+  deceased       DeceasedRecord @relation(fields: [deceased_id], references: [id], onDelete: Cascade)
+  claims         Claim[]
+}
+
+model Claim {
+  id          String     @id @default(uuid())
+  asset_id    String
+  claimant_id String
+  eligibility String     // e.g., "Fast-Track Eligible" vs "Civil Court Action Required"
+  status      String     // Draft, Submitted, eKYC_Completed, Certificate_Verified, Approved, Payout_Processed
+  track       String     // Free, Success_Fee, Enterprise
+  created_at  DateTime   @default(now())
+  
+  asset       Asset      @relation(fields: [asset_id], references: [id], onDelete: Cascade)
+  claimant    User       @relation(fields: [claimant_id], references: [id], onDelete: Cascade)
+  documents   Document[]
+}
+
+model Document {
+  id                  String   @id @default(uuid())
+  claim_id            String
+  type                String   // Aadhaar_eKYC, Death_Certificate, Indemnity_Bond, Affidavit
+  file_url            String
+  verification_status String   // Pending, Verified, Rejected
+  created_at          DateTime @default(now())
+  
+  claim               Claim    @relation(fields: [claim_id], references: [id], onDelete: Cascade)
+}
+
+model AiLog {
+  id         String   @id @default(uuid())
+  user_id    String
+  prompt     String
+  response   String
+  created_at DateTime @default(now())
+  
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
