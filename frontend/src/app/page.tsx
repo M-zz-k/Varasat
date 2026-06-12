@@ -65,7 +65,7 @@ export default function LandingPage() {
           {"अपने परिवार की".split(" ").map((word, i) => (
             <span key={i} className="inline-block word-reveal mr-[0.25em]" style={{ animationDelay: `${i * 0.1}s` }}>{word}</span>
           ))}
-          {" "}<span className="gold-shimmer">सुप्त संपत्ति वापस पाएं</span>
+          {" "}<span className="gold-shimmer text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#ffe98a] to-[#D4AF37]">सुप्त संपत्ति वापस पाएं</span>
         </>
       );
     }
@@ -75,7 +75,7 @@ export default function LandingPage() {
           {"ನಿಮ್ಮ ಆಸ್ತಿಯನ್ನು".split(" ").map((word, i) => (
             <span key={i} className="inline-block word-reveal mr-[0.25em]" style={{ animationDelay: `${i * 0.1}s` }}>{word}</span>
           ))}
-          {" "}<span className="gold-shimmer">ಮರಳಿ ಪಡೆಯಿರಿ</span>
+          {" "}<span className="gold-shimmer text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#ffe98a] to-[#D4AF37]">ಮರಳಿ ಪಡೆಯಿರಿ</span>
         </>
       );
     }
@@ -84,30 +84,39 @@ export default function LandingPage() {
         {"Recover Your Family's".split(" ").map((word, i) => (
           <span key={i} className="inline-block word-reveal mr-[0.25em]" style={{ animationDelay: `${i * 0.1}s` }}>{word}</span>
         ))}
-        {" "}<span className="gold-shimmer">Dormant Wealth</span>
+        {" "}<span className="gold-shimmer text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#ffe98a] to-[#D4AF37]">Dormant Wealth</span>
       </>
     );
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-white via-[#F8F9FA] to-[#EFF2F5] flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
       
       {/* ── Anti-gravity background layer ── */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
         {/* Morphing blob — top left navy */}
-        <div className="absolute -top-48 -left-48 w-[600px] h-[600px] bg-[#0A2540]/7 blur-[80px]"
+        <div className="absolute -top-48 -left-48 w-[600px] h-[600px] bg-[#0A2540]/8 blur-[80px]"
           style={{ animation: "blobMorph 20s ease-in-out infinite, bgDrift 25s ease-in-out infinite" }} />
         {/* Morphing blob — bottom right gold */}
-        <div className="absolute -bottom-48 -right-32 w-[520px] h-[520px] bg-[#D4AF37]/8 blur-[90px]"
+        <div className="absolute -bottom-48 -right-32 w-[520px] h-[520px] bg-[#D4AF37]/9 blur-[90px]"
           style={{ animation: "blobMorph 25s ease-in-out infinite reverse, bgDrift 30s ease-in-out infinite reverse" }} />
-        {/* Subtle ledger grid */}
+        {/* Technical Ledger Grid */}
         <svg className="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="varasat-grid" width="56" height="56" patternUnits="userSpaceOnUse">
-              <path d="M 56 0 L 0 0 0 56" fill="none" stroke="#0A2540" strokeWidth="1"/>
+            <pattern id="varasat-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#0A2540" strokeWidth="1"/>
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#varasat-grid)" />
+        </svg>
+        {/* Modern Dot Grid Pattern */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="dot-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="0.75" fill="#0A2540" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dot-grid)" />
         </svg>
         {/* Floating gold particles */}
         {[
@@ -136,17 +145,20 @@ export default function LandingPage() {
               <Sparkles className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <span className="text-xl font-bold tracking-widest text-white">V A R A S A T</span>
+              <span className="text-xl font-extrabold tracking-[0.2em] text-white">VARASAT</span>
               <p className="text-[9px] tracking-wider text-gold font-medium -mt-1">INHERITANCE RECOVERY</p>
             </div>
           </div>
           
           <div className="hidden md:flex items-center space-x-6">
-            <span className="text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 flex items-center space-x-1">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping mr-1"></span>
-              Live: ₹{(recovered / 10).toFixed(1)} Lakhs Recovered Today
+            <span className="text-xs text-emerald-400 bg-emerald-400/5 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-400/20 flex items-center space-x-2 shadow-sm font-medium">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+              </span>
+              <span>Live: ₹{(recovered / 10).toFixed(1)} Lakhs Recovered Today</span>
             </span>
-            <div className="text-xs text-slate-300 flex items-center space-x-1.5">
+            <div className="text-xs text-slate-200 bg-white/5 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center space-x-2 shadow-sm font-medium">
               <Shield className="w-3.5 h-3.5 text-gold" />
               <span>Aadhaar & DigiLocker Integrated</span>
             </div>
@@ -183,7 +195,7 @@ export default function LandingPage() {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-primary leading-tight">
             {getHeroHeadline()}
           </h1>
-          <p className="text-lg text-slate-700 leading-relaxed font-light">
+          <p className="text-lg text-slate-600 leading-loose tracking-wide font-light">
             {t[lang].sub}
           </p>
         </section>
@@ -191,19 +203,25 @@ export default function LandingPage() {
         {/* Triple Action Portal Blocks */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4 slide-up" style={{ animationDelay: '0.4s' }}>
           
-          {/* Track 1/2: Conversational Mitra (WhatsApp Style) */}
-          <div className="glass-card-dark text-white border border-gold/30 rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden group hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(212,175,55,0.15)] transition-all duration-500">
-            <div className="absolute top-0 right-0 bg-gold/10 w-32 h-32 rounded-full blur-3xl group-hover:bg-gold/20 transition-all"></div>
+          {/* Card 1: Conversational Mitra (WhatsApp Style) */}
+          <div className="glass-card-dark text-white border border-[#D4AF37]/30 rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden group hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(212,175,55,0.15)] transition-all duration-500 h-full">
+            <div className="absolute top-0 right-0 bg-[#D4AF37]/10 w-32 h-32 rounded-full blur-3xl group-hover:bg-[#D4AF37]/20 transition-all"></div>
             <div className="space-y-6">
-              <div className="bg-gold text-primary p-3 w-fit rounded-2xl shadow-lg glow-gold">
+              <div className="bg-[#D4AF37] text-primary p-3 w-fit rounded-2xl shadow-lg glow-gold">
                 <MessageSquare className="w-6 h-6" />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <h2 className="text-2xl font-bold">{t[lang].mitra}</h2>
-                  <span className="text-[10px] bg-success/20 text-success border border-success/30 px-2 py-0.5 rounded font-bold uppercase tracking-wider">Voice</span>
+                  <h2 className="text-2xl font-bold text-white">{t[lang].mitra}</h2>
+                  <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider flex items-center">
+                    <span className="relative flex h-1.5 w-1.5 mr-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                    </span>
+                    Voice
+                  </span>
                 </div>
-                <p className="text-sm text-slate-300 leading-relaxed">
+                <p className="text-sm text-slate-300 leading-relaxed font-light">
                   Start your recovery claim using our conversational voice assistant. Tailored for rural users 
                   with Hindi, Kannada, Tamil, & Telugu speech inputs. Zero typing required.
                 </p>
@@ -212,10 +230,10 @@ export default function LandingPage() {
             <div className="pt-8 space-y-4">
               <div className="text-[11px] text-gold border-t border-white/10 pt-4 flex justify-between">
                 <span>{t[lang].secLabel}</span>
-                <span className="font-semibold">हिंदी • ಕನ್ನಡ • தமிழ் • తెలుగు</span>
+                <span className="font-semibold text-white/90">हिंदी •  ಕನ್ನಡ • தமிழ் • తెలుగు</span>
               </div>
               <Link href="/mitra">
-                <button className="w-full bg-gold hover:bg-gold/90 text-primary font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-gold/20 cursor-pointer">
+                <button className="w-full bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-primary font-bold py-3.5 px-6 rounded-xl transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(212,175,55,0.3)] flex items-center justify-center space-x-2 cursor-pointer text-sm">
                   <span>{t[lang].mitraSub}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
@@ -223,57 +241,63 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Track 2: Advanced Analytics Dashboard */}
-          <div className="glass-card text-primary rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden group hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(212,175,55,0.15)] transition-all duration-500">
+          {/* Card 2: Advanced Analytics Dashboard */}
+          <div className="bg-white text-primary border border-[#D4AF37]/20 rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden group hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(212,175,55,0.15)] transition-all duration-500 h-full">
             <div className="absolute top-0 right-0 bg-primary/5 w-32 h-32 rounded-full blur-3xl group-hover:bg-primary/10 transition-all"></div>
             <div className="space-y-6">
-              <div className="bg-primary text-white p-3 w-fit rounded-2xl shadow-lg glow-gold">
-                <BarChart3 className="w-6 h-6 text-gold" />
+              <div className="bg-primary text-gold p-3 w-fit rounded-2xl shadow-lg">
+                <BarChart3 className="w-6 h-6" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-bold text-primary">{t[lang].dashboard}</h2>
-                <p className="text-sm text-slate-600 leading-relaxed">
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-2xl font-bold text-primary">{t[lang].dashboard}</h2>
+                  <span className="text-[10px] bg-primary/10 text-primary border border-primary/25 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Analytics</span>
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed font-light">
                   Track the progress of registered claims in real-time. View mathematically generated 
                   heir apportionments (HSA Class I), compounding accrued interest vs principal, and download indemnity documents.
                 </p>
               </div>
             </div>
             <div className="pt-8 space-y-4">
-              <div className="text-[11px] text-slate-500 border-t border-slate-100 pt-4 flex justify-between">
+              <div className="text-[11px] text-slate-500 border-t border-slate-200 pt-4 flex justify-between">
                 <span>Routing Track:</span>
-                <span className="font-semibold text-primary">Free B2C &lt; ₹5L / Success Fee &gt; ₹5L</span>
+                <span className="font-semibold text-[#0A2540]">Free B2C &lt; ₹5L / Success Fee &gt; ₹5L</span>
               </div>
               <Link href="/dashboard">
-                <button className="w-full bg-primary hover:bg-primary/95 text-white font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg cursor-pointer">
-                  <span className="text-gold font-bold">{t[lang].dashBtn}</span>
+                <button className="w-full bg-[#0A2540] hover:bg-[#0A2540]/90 text-gold font-bold py-3.5 px-6 rounded-xl transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(10,37,64,0.3)] flex items-center justify-center space-x-2 cursor-pointer text-sm">
+                  <span>{t[lang].dashBtn}</span>
                   <ArrowRight className="w-4 h-4 text-gold" />
                 </button>
               </Link>
             </div>
           </div>
 
-          {/* Track 3: B2G SaaS Enterprise Portal */}
-          <div className="glass-card text-primary border border-gold/30 rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden group hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(212,175,55,0.15)] transition-all duration-500">
-            <div className="absolute top-0 right-0 bg-gold/5 w-32 h-32 rounded-full blur-3xl group-hover:bg-gold/10 transition-all"></div>
+          {/* Card 3: B2G SaaS Enterprise Portal */}
+          <div className="glass-card-dark text-white border border-[#D4AF37]/30 rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden group hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(212,175,55,0.15)] transition-all duration-500 h-full">
+            <div className="absolute top-0 right-0 bg-[#D4AF37]/10 w-32 h-32 rounded-full blur-3xl group-hover:bg-[#D4AF37]/20 transition-all"></div>
             <div className="space-y-6">
-              <div className="bg-gold/10 border border-gold/45 text-primary p-3 w-fit rounded-2xl shadow-md glow-gold">
-                <Landmark className="w-6 h-6 text-primary" />
+              <div className="bg-[#D4AF37] text-primary p-3 w-fit rounded-2xl shadow-lg glow-gold">
+                <Landmark className="w-6 h-6" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-bold text-primary">{t[lang].bank}</h2>
-                <p className="text-sm text-slate-600 leading-relaxed">
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-2xl font-bold text-white">{t[lang].bank}</h2>
+                  <span className="text-[10px] bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/35 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Enterprise</span>
+                </div>
+                <p className="text-sm text-slate-300 leading-relaxed font-light">
                   Enterprise verification SaaS dashboard for banks and insurance providers. Review digital eKYC logs, 
                   audit DigiLocker-linked records, and verify automated indemnity bonds for fast-track processing.
                 </p>
               </div>
             </div>
             <div className="pt-8 space-y-4">
-              <div className="text-[11px] text-slate-500 border-t border-slate-100 pt-4 flex justify-between">
+              <div className="text-[11px] text-gold border-t border-white/10 pt-4 flex justify-between">
                 <span>Security Standards:</span>
-                <span className="font-semibold text-primary">L1 eKYC • L2 DigiLocker • L3 Bond</span>
+                <span className="font-semibold text-white/90">L1 eKYC • L2 DigiLocker • L3 Bond</span>
               </div>
               <Link href="/bank">
-                <button className="w-full bg-white hover:bg-slate-50 text-primary border-2 border-primary font-bold py-3 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-md cursor-pointer">
+                <button className="w-full bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-primary font-bold py-3.5 px-6 rounded-xl transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(212,175,55,0.3)] flex items-center justify-center space-x-2 cursor-pointer text-sm">
                   <span>{t[lang].bankBtn}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
