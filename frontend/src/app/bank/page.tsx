@@ -9,6 +9,7 @@ import {
 import FamilyTreeGraph from "../../components/FamilyTreeGraph";
 import WolframAuditViewer from "../../components/WolframAuditViewer";
 import API_BASE from "../../lib/api";
+import ParticleBackground from "../../components/ParticleBackground";
 
 export default function BankEnterprisePortal() {
   const [claims, setClaims] = useState<any[]>([]);
@@ -180,10 +181,11 @@ export default function BankEnterprisePortal() {
   }
 
   return (
-    <div className="min-h-screen bg-warm-white flex flex-col justify-between selection:bg-gold selection:text-primary">
+    <div className="min-h-screen bg-warm-white flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
+      <ParticleBackground />
       
       {/* Header */}
-      <header className="border-b border-gold/20 bg-primary/95 text-white sticky top-0 z-50 px-6 py-4 shadow-md">
+      <header className="border-b border-gold/20 bg-primary/95 text-white sticky top-0 z-50 px-6 py-4 shadow-md z-20">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Link href="/" className="hover:text-gold transition">
@@ -202,12 +204,12 @@ export default function BankEnterprisePortal() {
       </header>
 
       {/* Main Grid */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8 drift-in relative z-10">
         
         {/* Left Side: Claims Queue */}
         <div className="lg:col-span-1 space-y-6">
           <h2 className="text-xl font-bold text-primary flex items-center space-x-2">
-            <Landmark className="w-5 h-5 text-gold" />
+            <Landmark className="w-5 h-5 text-gold float" />
             <span>Active Claims Queue</span>
           </h2>
 
@@ -216,7 +218,7 @@ export default function BankEnterprisePortal() {
               <div 
                 key={claim.id} 
                 onClick={() => setSelectedClaim(claim)}
-                className={`border-2 rounded-2xl p-5 cursor-pointer transition-all duration-200 ${
+                className={`border-2 rounded-2xl p-5 cursor-pointer transition-all duration-200 hover-lift ${
                   selectedClaim?.id === claim.id 
                     ? "bg-primary text-white border-gold shadow-lg" 
                     : "bg-white text-primary border-slate-200 hover:border-slate-300"
@@ -259,7 +261,7 @@ export default function BankEnterprisePortal() {
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-6">
               <div className="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h3 className="text-base font-extrabold text-primary flex items-center space-x-1.5">
-                  <ShieldCheck className="w-5 h-5 text-gold" />
+                  <ShieldCheck className="w-5 h-5 text-gold float" />
                   <span>3-Layer Security Audit Checklist</span>
                 </h3>
                 <span className="text-xs font-bold text-slate-500">

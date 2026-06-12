@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import FamilyTreeGraph from "../../components/FamilyTreeGraph";
 import API_BASE from "../../lib/api";
+import ParticleBackground from "../../components/ParticleBackground";
 
 // Define message structure
 interface Message {
@@ -416,8 +417,9 @@ export default function VarasatMitraPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary via-[#0f2e4e] to-primary flex flex-col justify-between p-4 md:p-8">
-      <div className="max-w-6xl w-full mx-auto flex flex-col md:flex-row gap-6 items-stretch flex-1">
+    <div className="min-h-screen bg-gradient-to-br from-primary via-[#0f2e4e] to-primary flex flex-col justify-between p-4 md:p-8 relative overflow-hidden">
+      <ParticleBackground />
+      <div className="max-w-6xl w-full mx-auto flex flex-col md:flex-row gap-6 items-stretch flex-1 z-10">
         
         {/* Chat Feed Panel */}
         <div className="flex-1 bg-[#ebe5de] rounded-3xl flex flex-col justify-between shadow-2xl overflow-hidden border-2 border-gold/30">
@@ -426,7 +428,7 @@ export default function VarasatMitraPage() {
           <div className="bg-[#075E54] text-white px-6 py-4 flex items-center justify-between border-b border-black/10">
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <div className="w-10 h-10 bg-gold rounded-full flex items-center justify-center font-bold text-primary shadow-md">
+                <div className="w-10 h-10 bg-gold rounded-full flex items-center justify-center font-bold text-primary shadow-md glow-gold">
                   VM
                 </div>
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full border border-white"></span>
@@ -445,7 +447,7 @@ export default function VarasatMitraPage() {
           {/* Messages Scroll Area */}
           <div className="flex-1 p-6 overflow-y-auto space-y-4 max-h-[500px]">
             {messages.map((m, idx) => (
-              <div key={idx} className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"}`}>
+              <div key={idx} className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"} drift-in`} style={{ animationDelay: `${idx * 0.05}s` }}>
                 <div className={`max-w-[85%] rounded-2xl px-4 py-3.5 shadow-md ${
                   m.sender === "user" 
                     ? "bg-[#dcf8c6] text-slate-800 rounded-tr-none" 
@@ -811,7 +813,7 @@ export default function VarasatMitraPage() {
               </div>
             ) : (
               <div className="flex-1 flex flex-col justify-center items-center text-center p-8">
-                <HelpCircle className="w-12 h-12 text-gold animate-bounce mb-3" />
+                <HelpCircle className="w-12 h-12 text-gold float mb-3" />
                 <p className="text-xs text-slate-300 leading-relaxed">
                   Start filling out the onboarding questions on the left. The succession tree path and inheritance 
                   shares will calculate mathematically here.

@@ -35,3 +35,53 @@ html {
   background-color: var(--color-gold);
   color: var(--color-primary);
 }
+
+/* --- Anti-Gravity Visual Effects --- */
+@keyframes floatUp {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes driftIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0px rgba(212, 175, 55, 0); }
+  50% { box-shadow: 0 0 18px rgba(212, 175, 55, 0.35); }
+}
+@keyframes particleDrift {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(30px);
+    opacity: 0;
+  }
+}
+
+.float {
+  animation: floatUp 4s ease-in-out infinite;
+}
+.drift-in {
+  animation: driftIn 0.6s ease-out forwards;
+}
+.glow-gold {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* Hover lift transition utility */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-lift:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 24px -10px rgba(10, 37, 64, 0.15), 0 4px 12px -5px rgba(212, 175, 55, 0.15) !important;
+}
+

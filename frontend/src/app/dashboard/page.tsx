@@ -9,6 +9,7 @@ import {
 import FamilyTreeGraph from "../../components/FamilyTreeGraph";
 import DashboardAnalytics from "../../components/DashboardAnalytics";
 import API_BASE from "../../lib/api";
+import ParticleBackground from "../../components/ParticleBackground";
 
 export default function ClaimantDashboard() {
   const [claims, setClaims] = useState<any[]>([]);
@@ -220,10 +221,11 @@ export default function ClaimantDashboard() {
   const inflationPower = selectedClaim?.financialProjections?.inflationAdjustedValue || (totalWealth * 0.7);
 
   return (
-    <div className="min-h-screen bg-warm-white flex flex-col justify-between selection:bg-gold selection:text-primary">
+    <div className="min-h-screen bg-warm-white flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
+      <ParticleBackground />
       
       {/* Header */}
-      <header className="border-b border-gold/20 bg-primary/95 text-white sticky top-0 z-50 px-6 py-4 shadow-md">
+      <header className="border-b border-gold/20 bg-primary/95 text-white sticky top-0 z-50 px-6 py-4 shadow-md z-20">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Link href="/" className="hover:text-gold transition">
@@ -242,7 +244,7 @@ export default function ClaimantDashboard() {
       </header>
 
       {/* Main Grid */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8 drift-in relative z-10">
         
         {/* Financial Accruals analytics card */}
           {selectedClaim && (
@@ -260,7 +262,7 @@ export default function ClaimantDashboard() {
         {/* Left Side: Claims List and Routing Tracks */}
         <div className="lg:col-span-1 space-y-6">
           <h2 className="text-xl font-bold text-primary flex items-center space-x-2">
-            <Wallet className="w-5 h-5 text-gold" />
+            <Wallet className="w-5 h-5 text-gold float" />
             <span>Claim Portfolios</span>
           </h2>
           
@@ -269,7 +271,7 @@ export default function ClaimantDashboard() {
               <div 
                 key={claim.id} 
                 onClick={() => fetchClaimDetails(claim.id)}
-                className={`border-2 rounded-2xl p-5 cursor-pointer transition-all duration-200 ${
+                className={`border-2 rounded-2xl p-5 cursor-pointer transition-all duration-200 hover-lift ${
                   selectedClaim?.id === claim.id 
                     ? "bg-primary text-white border-gold shadow-lg" 
                     : "bg-white text-primary border-slate-200 hover:border-slate-300"
@@ -332,7 +334,7 @@ export default function ClaimantDashboard() {
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-6">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="text-base font-extrabold text-primary flex items-center space-x-1.5">
-                  <BarChart3 className="w-5 h-5 text-gold" />
+                  <BarChart3 className="w-5 h-5 text-gold float" />
                   <span>Financial Accruals & Real Value Timeline</span>
                 </h3>
                 <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200 uppercase font-semibold">
@@ -463,7 +465,7 @@ export default function ClaimantDashboard() {
               <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md flex flex-col justify-between">
                 <div>
                   <h3 className="text-base font-extrabold text-primary border-b border-slate-100 pb-2.5 mb-4 flex items-center space-x-1.5">
-                    <FileText className="w-5 h-5 text-gold" />
+                    <FileText className="w-5 h-5 text-gold float" />
                     <span>L3 Secured Documents</span>
                   </h3>
                   <p className="text-xs text-slate-600 leading-relaxed mb-6">

@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { Shield, Sparkles, MessageSquare, BarChart3, Landmark, ArrowRight, HelpCircle } from "lucide-react";
+import ParticleBackground from "../components/ParticleBackground";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-warm-white flex flex-col justify-between selection:bg-gold selection:text-primary">
+    <div className="min-h-screen bg-warm-white flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
+      <ParticleBackground />
       
       {/* Sleek Premium Header */}
       <header className="border-b border-gold/20 bg-primary/95 text-white backdrop-blur-md sticky top-0 z-50 px-6 py-4 shadow-lg transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="bg-gold p-2 rounded-lg flex items-center justify-center shadow-md shadow-gold/20 animate-pulse">
+            <div className="bg-gold p-2 rounded-lg flex items-center justify-center shadow-md shadow-gold/20 float">
               <Sparkles className="w-5 h-5 text-primary" />
             </div>
             <div>
@@ -37,7 +39,7 @@ export default function LandingPage() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-12 flex flex-col justify-center space-y-12">
         
         {/* Hero Banner Section */}
-        <section className="text-center space-y-6 max-w-3xl mx-auto py-6">
+        <section className="text-center space-y-6 max-w-3xl mx-auto py-6 drift-in" style={{ animationDelay: '0.1s' }}>
           <div className="inline-flex items-center space-x-2 bg-gold/10 border border-gold/30 text-primary px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">
             <Landmark className="w-3.5 h-3.5 text-gold" />
             <span>RBI Unclaimed Deposits Circular Compliant</span>
@@ -55,10 +57,10 @@ export default function LandingPage() {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
           
           {/* Track 1/2: Conversational Mitra (WhatsApp Style) */}
-          <div className="bg-primary text-white border border-gold/30 rounded-3xl p-8 flex flex-col justify-between shadow-2xl hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group">
+          <div className="bg-primary text-white border border-gold/30 rounded-3xl p-8 flex flex-col justify-between shadow-2xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group drift-in" style={{ animationDelay: '0.2s' }}>
             <div className="absolute top-0 right-0 bg-gold/10 w-32 h-32 rounded-full blur-3xl group-hover:bg-gold/20 transition-all"></div>
             <div className="space-y-6">
-              <div className="bg-gold text-primary p-3 w-fit rounded-2xl shadow-lg">
+              <div className="bg-gold text-primary p-3 w-fit rounded-2xl shadow-lg glow-gold">
                 <MessageSquare className="w-6 h-6" />
               </div>
               <div className="space-y-2">
@@ -75,7 +77,7 @@ export default function LandingPage() {
             <div className="pt-8 space-y-4">
               <div className="text-[11px] text-gold border-t border-white/10 pt-4 flex justify-between">
                 <span>Language Supported:</span>
-                <span className="font-semibold">हिंदी • ಕನ್ನಡ • தமிழ் • తెలుగు</span>
+                <span className="font-semibold">हिंदी • कन्नड़ • தமிழ் • తెలుగు</span>
               </div>
               <Link href="/mitra">
                 <button className="w-full bg-gold hover:bg-gold/90 text-primary font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-gold/20 cursor-pointer">
@@ -87,10 +89,10 @@ export default function LandingPage() {
           </div>
 
           {/* Track 2: Advanced Analytics Dashboard */}
-          <div className="bg-white text-primary border border-slate-200 rounded-3xl p-8 flex flex-col justify-between shadow-2xl hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group">
+          <div className="bg-white text-primary border border-slate-200 rounded-3xl p-8 flex flex-col justify-between shadow-2xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group drift-in" style={{ animationDelay: '0.3s' }}>
             <div className="absolute top-0 right-0 bg-primary/5 w-32 h-32 rounded-full blur-3xl group-hover:bg-primary/10 transition-all"></div>
             <div className="space-y-6">
-              <div className="bg-primary text-white p-3 w-fit rounded-2xl shadow-lg">
+              <div className="bg-primary text-white p-3 w-fit rounded-2xl shadow-lg glow-gold">
                 <BarChart3 className="w-6 h-6 text-gold" />
               </div>
               <div className="space-y-2">
@@ -116,10 +118,10 @@ export default function LandingPage() {
           </div>
 
           {/* Track 3: B2G SaaS Enterprise Portal */}
-          <div className="bg-white text-primary border border-gold/30 rounded-3xl p-8 flex flex-col justify-between shadow-2xl hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group">
+          <div className="bg-white text-primary border border-gold/30 rounded-3xl p-8 flex flex-col justify-between shadow-2xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group drift-in" style={{ animationDelay: '0.4s' }}>
             <div className="absolute top-0 right-0 bg-gold/5 w-32 h-32 rounded-full blur-3xl group-hover:bg-gold/10 transition-all"></div>
             <div className="space-y-6">
-              <div className="bg-gold/10 border border-gold/45 text-primary p-3 w-fit rounded-2xl shadow-md">
+              <div className="bg-gold/10 border border-gold/45 text-primary p-3 w-fit rounded-2xl shadow-md glow-gold">
                 <Landmark className="w-6 h-6 text-primary" />
               </div>
               <div className="space-y-2">
@@ -147,7 +149,7 @@ export default function LandingPage() {
         </section>
 
         {/* Security & Validation badges */}
-        <section className="bg-primary/5 border border-gold/10 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 text-center md:text-left">
+        <section className="bg-primary/5 border border-gold/10 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 text-center md:text-left drift-in" style={{ animationDelay: '0.5s' }}>
           <div className="flex items-center space-x-3">
             <Shield className="w-8 h-8 text-gold flex-shrink-0" />
             <div>
