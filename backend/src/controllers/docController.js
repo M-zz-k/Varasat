@@ -76,11 +76,49 @@ async function generateLegalDocumentPdf(req, res) {
       const assetsMock = [{ type: assetType || 'Savings Bank Deposit', institution: institution || 'LIC India', amount: amount || '450000' }];
       const textData = await draftAffidavit(claimantName, relation || 'Son', deceasedName, assetsMock, language || 'Hindi');
 
+      // --- English Section (default Helvetica font) ---
       doc.fillColor(deepBlue).fontSize(12).text('English Version:', { underline: true, paragraphGap: 8 });
       doc.fillColor(charcoal).fontSize(10).text(textData.englishText, { align: 'justify', lineGap: 3, paragraphGap: 20 });
 
+      // --- Vernacular Section (Unicode/Devanagari font required) ---
       doc.fillColor(deepBlue).fontSize(12).text(`${language || 'Hindi'} Version:`, { underline: true, paragraphGap: 8 });
-      doc.fillColor(charcoal).fontSize(10).text(textData.vernacularText, { align: 'justify', lineGap: 3 });
+
+      // Try to register a Unicode-capable font for Devanagari script.
+      const path = require('path');
+      const fs = require('fs');
+      const UNICODE_FONT_PATHS = [
+        path.join(__dirname, '../assets/fonts/NotoSansDevanagari-Regular.ttf'),
+        'C:\\Windows\\Fonts\\NirmalaUI.ttf',      // Windows — Nirmala UI Regular
+        'C:\\Windows\\Fonts\\NirmalaS.ttf',       // Windows — Nirmala UI Slim
+        '/usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf', // Linux
+        '/System/Library/Fonts/Supplemental/NotoSansDevanagari-Regular.ttf' // macOS
+      ];
+
+      let unicodeFontLoaded = false;
+      for (const fontPath of UNICODE_FONT_PATHS) {
+        if (fs.existsSync(fontPath)) {
+          try {
+            doc.registerFont('UnicodeFont', fontPath);
+            unicodeFontLoaded = true;
+            break;
+          } catch (e) {
+            // continue trying next candidate
+          }
+        }
+      }
+
+      if (unicodeFontLoaded) {
+        doc.font('UnicodeFont').fillColor(charcoal).fontSize(10)
+           .text(textData.vernacularText, { align: 'justify', lineGap: 4 });
+        doc.font('Helvetica'); // restore default font for everything after
+      } else {
+        // Fallback: note that proper rendering requires a Unicode font on the server
+        doc.fillColor(charcoal).fontSize(9)
+           .text('[Hindi vernacular text — requires a Devanagari-capable font on the server]', { align: 'left', lineGap: 3 })
+           .moveDown(0.5)
+           .fontSize(10)
+           .text(textData.vernacularText, { align: 'left', lineGap: 3 });
+      }
     }
 
     // Footer and Signatures
