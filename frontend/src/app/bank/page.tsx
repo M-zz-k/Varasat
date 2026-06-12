@@ -173,19 +173,19 @@ export default function BankEnterprisePortal() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-warm-white flex flex-col justify-center items-center">
+      <div className="min-h-screen bg-gradient-to-br from-primary via-[#0f2e4e] to-primary flex flex-col justify-center items-center">
         <RefreshCw className="w-10 h-10 text-gold animate-spin mb-3" />
-        <span className="text-sm font-semibold text-primary">Loading partner portal queues...</span>
+        <span className="text-sm font-semibold text-white/90">Loading partner portal queues...</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-warm-white flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-primary via-[#0f2e4e] to-primary text-white flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
       <ParticleBackground />
       
       {/* Header */}
-      <header className="border-b border-gold/20 bg-primary/95 text-white sticky top-0 z-50 px-6 py-4 shadow-md z-20">
+      <header className="border-b border-gold/20 bg-primary/95 text-white sticky top-0 z-50 px-6 py-4 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Link href="/" className="hover:text-gold transition">
@@ -208,7 +208,7 @@ export default function BankEnterprisePortal() {
         
         {/* Left Side: Claims Queue */}
         <div className="lg:col-span-1 space-y-6">
-          <h2 className="text-xl font-bold text-primary flex items-center space-x-2">
+          <h2 className="text-xl font-bold text-white flex items-center space-x-2">
             <Landmark className="w-5 h-5 text-gold float" />
             <span>Active Claims Queue</span>
           </h2>
@@ -218,10 +218,10 @@ export default function BankEnterprisePortal() {
               <div 
                 key={claim.id} 
                 onClick={() => setSelectedClaim(claim)}
-                className={`border-2 rounded-2xl p-5 cursor-pointer transition-all duration-200 hover-lift ${
+                className={`border-2 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover-lift ${
                   selectedClaim?.id === claim.id 
-                    ? "bg-primary text-white border-gold shadow-lg" 
-                    : "bg-white text-primary border-slate-200 hover:border-slate-300"
+                    ? "glass-card-dark text-white border-gold shadow-[0_15px_30px_rgba(212,175,55,0.15)]" 
+                    : "glass-card text-[#0A2540] border-[#D4AF37]/20 hover:border-[#D4AF37]/45"
                 }`}
               >
                 <div className="flex justify-between items-start">
@@ -236,15 +236,15 @@ export default function BankEnterprisePortal() {
                 </div>
                 
                 <h3 className="font-extrabold text-base mt-3">{claim.claimant?.name}</h3>
-                <p className="text-xs text-slate-400 mt-1">Deceased: Ramesh Kumar Senior</p>
+                <p className={`text-xs mt-1 ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-500'}`}>Deceased: Ramesh Kumar Senior</p>
                 
-                <div className="flex justify-between items-center mt-4 border-t border-slate-100/10 pt-3">
+                <div className={`flex justify-between items-center mt-4 border-t pt-3 ${selectedClaim?.id === claim.id ? 'border-white/10' : 'border-[#0A2540]/10'}`}>
                   <div>
-                    <span className="text-[9px] text-slate-400 block uppercase">Total Balance</span>
+                    <span className={`text-[9px] block uppercase ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-500'}`}>Total Balance</span>
                     <span className="font-bold text-sm">₹{claim.asset?.amount?.toLocaleString()}</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[9px] text-slate-400 block uppercase">Routing Track</span>
+                    <span className={`text-[9px] block uppercase ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-500'}`}>Routing Track</span>
                     <span className="text-xs font-bold text-gold">{claim.track ? claim.track.replace('_', ' ') : ''}</span>
                   </div>
                 </div>
@@ -258,13 +258,13 @@ export default function BankEnterprisePortal() {
           <div className="lg:col-span-2 space-y-8">
             
             {/* L1/L2/L3 Audit Dashboard */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-6">
-              <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 className="text-base font-extrabold text-primary flex items-center space-x-1.5">
+            <div className="glass-card-dark rounded-3xl p-6 shadow-2xl space-y-6">
+              <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                <h3 className="text-base font-extrabold text-white flex items-center space-x-1.5">
                   <ShieldCheck className="w-5 h-5 text-gold float" />
                   <span>3-Layer Security Audit Checklist</span>
                 </h3>
-                <span className="text-xs font-bold text-slate-500">
+                <span className="text-xs font-bold text-slate-400">
                   Ref: {selectedClaim.id.slice(0, 8).toUpperCase()}
                 </span>
               </div>
@@ -272,12 +272,12 @@ export default function BankEnterprisePortal() {
               <div className="space-y-4">
                 
                 {selectedClaim.documents && (
-                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3 text-xs">
+                  <div className="bg-[#0A2540]/60 border border-gold/20 rounded-2xl p-4 space-y-3 text-xs">
                     {selectedClaim.documents.map((d: any) => (
-                      <div key={d.id} className="flex justify-between items-center py-1 border-b border-slate-100 last:border-b-0">
-                        <span className="font-semibold text-primary">{d.type.replace('_', ' ')}:</span>
+                      <div key={d.id} className="flex justify-between items-center py-1 border-b border-white/5 last:border-b-0">
+                        <span className="font-semibold text-slate-300">{d.type.replace('_', ' ')}:</span>
                         <span className={`font-bold px-2 py-0.5 rounded ${
-                          d.verificationStatus === 'Verified' || d.verification_status === 'Verified' ? 'bg-emerald-500/15 text-emerald-600' : 'bg-gold/15 text-gold'
+                          d.verificationStatus === 'Verified' || d.verification_status === 'Verified' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gold/20 text-gold'
                         }`}>
                           {d.verificationStatus || d.verification_status}
                         </span>
@@ -293,7 +293,7 @@ export default function BankEnterprisePortal() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
               {/* SVG Tree */}
-              <div className="bg-primary text-white rounded-3xl p-6 shadow-md border border-gold/30">
+              <div className="glass-card-dark text-white rounded-3xl p-6 shadow-2xl">
                 <FamilyTreeGraph 
                   deceasedName="Ramesh Kumar Senior" 
                   shares={selectedClaim.familyMembers || []} 
@@ -301,9 +301,9 @@ export default function BankEnterprisePortal() {
               </div>
 
               {/* Mathematical logs */}
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md flex flex-col justify-between">
+              <div className="glass-card-dark text-white rounded-3xl p-6 shadow-2xl flex flex-col justify-between">
                 <div>
-                  <h3 className="text-sm font-extrabold text-primary border-b border-slate-100 pb-2 mb-4 flex items-center space-x-1.5">
+                  <h3 className="text-sm font-extrabold text-white border-b border-white/10 pb-2 mb-4 flex items-center space-x-1.5">
                     <Users className="w-4 h-4 text-gold" />
                     <span>Wolfram Succession Audit Trace</span>
                   </h3>
@@ -315,9 +315,9 @@ export default function BankEnterprisePortal() {
                 </div>
 
                 {/* Approve/Reject Controls */}
-                <div className="flex gap-3 pt-4 border-t border-slate-100 mt-4">
+                <div className="flex gap-3 pt-4 border-t border-white/10 mt-4">
                   {selectedClaim.status === 'Approved' ? (
-                    <div className="w-full bg-emerald-50 border border-emerald-300 text-emerald-700 font-bold p-3.5 rounded-xl text-xs text-center flex items-center justify-center space-x-2">
+                    <div className="w-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold p-3.5 rounded-xl text-xs text-center flex items-center justify-center space-x-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                       <span>Claim Approved & Fund Release Authorized</span>
                     </div>
@@ -326,7 +326,7 @@ export default function BankEnterprisePortal() {
                       <button 
                         onClick={() => handleUpdateClaimStatus('Rejected')}
                         disabled={isActioning}
-                        className="border border-red-500 text-red-500 hover:bg-red-50 font-bold py-3 px-4 rounded-xl text-xs flex-1 cursor-pointer flex items-center justify-center space-x-1.5"
+                        className="border border-red-500/50 text-red-400 hover:bg-red-500/10 font-bold py-3 px-4 rounded-xl text-xs flex-1 cursor-pointer flex items-center justify-center space-x-1.5 transition-all duration-200"
                       >
                         <XCircle className="w-4 h-4" />
                         <span>Reject Claim</span>
@@ -334,7 +334,7 @@ export default function BankEnterprisePortal() {
                       <button 
                         onClick={() => handleUpdateClaimStatus('Approved')}
                         disabled={isActioning}
-                        className="bg-[#075E54] hover:bg-[#128C7E] text-white font-bold py-3 px-4 rounded-xl text-xs flex-1 shadow cursor-pointer flex items-center justify-center space-x-1.5"
+                        className="bg-[#075E54] hover:bg-[#128C7E] text-white font-bold py-3 px-4 rounded-xl text-xs flex-1 shadow cursor-pointer flex items-center justify-center space-x-1.5 transition-all duration-200"
                       >
                         <CheckCircle2 className="w-4 h-4 text-white" />
                         <span>Approve & Release</span>
@@ -352,7 +352,7 @@ export default function BankEnterprisePortal() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-slate-50 px-6 py-4 text-center text-xs text-slate-500 mt-10">
+      <footer className="border-t border-white/10 bg-primary/40 px-6 py-6 text-center text-xs text-slate-400 mt-10">
         <p>© 2026 Varasat Partner Enterprise Portal. Integrated with RBI DBR systems.</p>
       </footer>
     </div>
