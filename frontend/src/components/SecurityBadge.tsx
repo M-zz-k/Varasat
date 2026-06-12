@@ -55,11 +55,22 @@ interface LayerProps {
 
 function Layer({ label, sublabel, status, Icon, compact }: LayerProps) {
   const s = statusConfig[status];
+  const iconContainer = (
+    <div className={`${compact ? "p-1" : "p-2.5"} rounded-lg bg-[#0f172a]`}>
+      <Icon className={`${compact ? "w-3.5 h-3.5" : "w-5 h-5"} ${s.icon}`} />
+    </div>
+  );
+
   return (
     <div className={`flex ${compact ? "items-center space-x-2 px-2 py-1.5" : "flex-col items-center text-center space-y-2 p-4"} border ${s.border} ${s.bg} rounded-xl`}>
-      <div className={`${compact ? "p-1" : "p-2.5"} rounded-lg bg-[#0f172a]`}>
-        <Icon className={`${compact ? "w-3.5 h-3.5" : "w-5 h-5"} ${s.icon}`} />
-      </div>
+      {status === "Verified" ? (
+        <div className="relative">
+          {iconContainer}
+          <span className="absolute inset-0 rounded-lg border border-emerald-400/40 animate-[ripple_2.5s_ease-out_infinite]" />
+        </div>
+      ) : (
+        iconContainer
+      )}
       <div className={compact ? "flex-1" : ""}>
         <p className={`font-extrabold ${compact ? "text-[10px]" : "text-xs"} text-white`}>{label}</p>
         {!compact && <p className="text-[9px] text-slate-400 mt-0.5">{sublabel}</p>}

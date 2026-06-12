@@ -36,47 +36,95 @@ html {
   color: var(--color-primary);
 }
 
-/* --- Anti-Gravity Visual Effects --- */
-@keyframes floatUp {
+/* --- Anti-Gravity & Premium Motion Visual Effects --- */
+
+/* ── Entrance & motion ── */
+@keyframes wordReveal {
+  from { opacity: 0; transform: translateY(22px) skewY(2deg); }
+  to   { opacity: 1; transform: translateY(0)    skewY(0deg); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmerGold {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes drawLine {
+  from { stroke-dashoffset: 200; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes blobMorph {
+  0%,100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1);   }
+  33%      { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: scale(1.05); }
+  66%      { border-radius: 50% 40% 60% 30% / 40% 70% 50% 60%; transform: scale(0.97); }
+}
+@keyframes ripple {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  100% { transform: scale(2.4); opacity: 0;   }
+}
+@keyframes msgSlide {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+@keyframes headerBeam {
+  0%,100% { opacity: 0.4; transform: scaleX(0.85); }
+  50%      { opacity: 0.9; transform: scaleX(1);    }
+}
+@keyframes floatDot {
+  0%,100% { transform: translateY(0)    scale(1);   opacity: 0.35; }
+  50%      { transform: translateY(-20px) scale(1.3); opacity: 0.65; }
+}
+@keyframes bgDrift {
+  0%,100% { transform: translate(0,0)      scale(1);    }
+  33%      { transform: translate(28px,-18px) scale(1.04); }
+  66%      { transform: translate(-18px,14px) scale(0.97); }
+}
+
+.word-reveal  { animation: wordReveal 0.65s cubic-bezier(.22,1,.36,1) both; }
+.slide-up     { animation: slideUp   0.7s  cubic-bezier(.22,1,.36,1) both; }
+.msg-slide    { animation: msgSlide  0.35s cubic-bezier(.22,1,.36,1) both; }
+.gold-shimmer {
+  background: linear-gradient(90deg, #D4AF37 0%, #ffe98a 45%, #D4AF37 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerGold 3s linear infinite;
+}
+.glass-card {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(212,175,55,0.18);
+  box-shadow: 0 8px 40px rgba(10,37,64,0.10), 0 1px 0 rgba(212,175,55,0.15) inset;
+}
+.glass-card-dark {
+  background: rgba(10,37,64,0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(212,175,55,0.22);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.28), 0 1px 0 rgba(212,175,55,0.12) inset;
+}
+
+/* Legacy floating effect classes if needed by other pages */
+@keyframes floatUpLegacy {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-8px); }
 }
-@keyframes driftIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 0px rgba(212, 175, 55, 0); }
-  50% { box-shadow: 0 0 18px rgba(212, 175, 55, 0.35); }
-}
-@keyframes particleDrift {
-  0% {
-    transform: translateY(0) translateX(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.4;
-  }
-  90% {
-    opacity: 0.4;
-  }
-  100% {
-    transform: translateY(-110vh) translateX(30px);
-    opacity: 0;
-  }
-}
-
 .float {
-  animation: floatUp 4s ease-in-out infinite;
+  animation: floatUpLegacy 4s ease-in-out infinite;
 }
 .drift-in {
-  animation: driftIn 0.6s ease-out forwards;
+  animation: slideUp 0.6s ease-out forwards;
 }
 .glow-gold {
-  animation: glowPulse 3s ease-in-out infinite;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
 }
-
-/* Hover lift transition utility */
 .hover-lift {
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -84,16 +132,3 @@ html {
   transform: translateY(-4px) !important;
   box-shadow: 0 12px 24px -10px rgba(10, 37, 64, 0.15), 0 4px 12px -5px rgba(212, 175, 55, 0.15) !important;
 }
-
-@keyframes bgDrift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%       { transform: translate(30px, -20px) scale(1.04); }
-  66%       { transform: translate(-20px, 15px) scale(0.97); }
-}
-
-@keyframes floatDot {
-  0%, 100% { transform: translateY(0px) scale(1);   opacity: 0.4; }
-  50%       { transform: translateY(-18px) scale(1.2); opacity: 0.7; }
-}
-
-

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Heart, Star, Sparkles } from 'lucide-react';
 
 interface Heir {
@@ -18,6 +18,9 @@ export default function FamilyTreeGraph({ deceasedName, shares }: FamilyTreeProp
   // Simple automatic layout nodes
   // Deceased node is at the top center
   // Heirs nodes are arranged in a grid/flex row underneath
+  const [drawn, setDrawn] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setDrawn(true), 300); return () => clearTimeout(t); }, []);
+
   return (
     <div className="bg-primary/95 border-2 border-gold/40 rounded-3xl p-6 text-white shadow-2xl relative overflow-hidden">
       <div className="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-full blur-2xl"></div>
@@ -51,8 +54,12 @@ export default function FamilyTreeGraph({ deceasedName, shares }: FamilyTreeProp
                     y2={endY} 
                     stroke="#D4AF37" 
                     strokeWidth="1.5" 
-                    strokeDasharray="4,4"
                     opacity="0.6"
+                    style={{
+                      strokeDasharray: 200,
+                      strokeDashoffset: drawn ? 0 : 200,
+                      transition: `stroke-dashoffset 0.8s ease ${idx * 0.15}s`
+                    }}
                   />
                   <circle cx={endX} cy={endY} r="3" fill="#D4AF37" />
                 </g>
@@ -75,12 +82,13 @@ export default function FamilyTreeGraph({ deceasedName, shares }: FamilyTreeProp
           {shares.length === 0 ? (
             <div className="text-xs text-slate-400 italic py-4">No heirs added to tree yet.</div>
           ) : (
-            shares.map((heir, index) => {
+            shares.map((heir, idx) => {
               const hasShare = heir.sharePercentage > 0;
               return (
                 <div 
-                  key={index}
-                  className={`bg-primary/95 border ${hasShare ? 'border-gold shadow-gold/10' : 'border-slate-700 opacity-60'} px-4 py-3.5 rounded-2xl flex flex-col items-center text-center shadow-lg min-w-[110px] max-w-[130px] transition-all duration-300 hover:translate-y-[-2px]`}
+                  key={idx}
+                  className={`bg-primary/95 border ${hasShare ? 'border-gold shadow-gold/10' : 'border-slate-700 opacity-60'} px-4 py-3.5 rounded-2xl flex flex-col items-center text-center shadow-lg min-w-[110px] max-w-[130px] transition-all duration-300 hover:-translate-y-2 hover:shadow-gold/30 hover:shadow-lg`}
+                  style={{ animation: `slideUp 0.5s cubic-bezier(.22,1,.36,1) ${idx * 0.12}s both` }}
                 >
                   <div className={`p-1.5 rounded-full mb-1.5 ${hasShare ? 'bg-gold/20 text-gold' : 'bg-slate-800 text-slate-400'}`}>
                     <User className="w-4 h-4" />
