@@ -32,7 +32,7 @@ const db = {
   users: {
     create: async (args) => {
       if (isMock) {
-        const newUser = { id: require('crypto').randomUUID(), ...args.data, created_at: new Date() };
+        const newUser = { id: require('crypto').randomUUID(), ...args.data, createdAt: new Date() };
         mockDb.users.push(newUser);
         return newUser;
       }
@@ -67,8 +67,8 @@ const db = {
     },
     findMany: async (args) => {
       if (isMock) {
-        const userId = args.where?.user_id;
-        return mockDb.familyMembers.filter(f => f.user_id === userId);
+        const userId = args.where?.userId;
+        return mockDb.familyMembers.filter(f => f.userId === userId);
       }
       return prisma.familyMember.findMany(args);
     }
@@ -113,9 +113,9 @@ const db = {
         const claim = { 
           id: require('crypto').randomUUID(), 
           ...args.data, 
-          created_at: new Date(),
-          asset: mockDb.assets.find(a => a.id === args.data.asset_id),
-          claimant: mockDb.users.find(u => u.id === args.data.claimant_id),
+          createdAt: new Date(),
+          asset: mockDb.assets.find(a => a.id === args.data.assetId),
+          claimant: mockDb.users.find(u => u.id === args.data.claimantId),
           documents: []
         };
         mockDb.claims.push(claim);
@@ -128,9 +128,9 @@ const db = {
         // Resolve nested models for lists
         return mockDb.claims.map(c => ({
           ...c,
-          asset: mockDb.assets.find(a => a.id === c.asset_id),
-          claimant: mockDb.users.find(u => u.id === c.claimant_id),
-          documents: mockDb.documents.filter(d => d.claim_id === c.id)
+          asset: mockDb.assets.find(a => a.id === c.assetId),
+          claimant: mockDb.users.find(u => u.id === c.claimantId),
+          documents: mockDb.documents.filter(d => d.claimId === c.id)
         }));
       }
       return prisma.claim.findMany(args);
@@ -141,9 +141,9 @@ const db = {
         if (!c) return null;
         return {
           ...c,
-          asset: mockDb.assets.find(a => a.id === c.asset_id),
-          claimant: mockDb.users.find(u => u.id === c.claimant_id),
-          documents: mockDb.documents.filter(d => d.claim_id === c.id)
+          asset: mockDb.assets.find(a => a.id === c.assetId),
+          claimant: mockDb.users.find(u => u.id === c.claimantId),
+          documents: mockDb.documents.filter(d => d.claimId === c.id)
         };
       }
       return prisma.claim.findUnique(args);
@@ -163,7 +163,7 @@ const db = {
   documents: {
     create: async (args) => {
       if (isMock) {
-        const doc = { id: require('crypto').randomUUID(), ...args.data, created_at: new Date() };
+        const doc = { id: require('crypto').randomUUID(), ...args.data, createdAt: new Date() };
         mockDb.documents.push(doc);
         return doc;
       }
@@ -171,7 +171,7 @@ const db = {
     },
     findMany: async (args) => {
       if (isMock) {
-        return mockDb.documents.filter(d => d.claim_id === args.where.claim_id);
+        return mockDb.documents.filter(d => d.claimId === args.where.claimId);
       }
       return prisma.document.findMany(args);
     },
@@ -190,7 +190,7 @@ const db = {
   aiLogs: {
     create: async (args) => {
       if (isMock) {
-        const log = { id: require('crypto').randomUUID(), ...args.data, created_at: new Date() };
+        const log = { id: require('crypto').randomUUID(), ...args.data, createdAt: new Date() };
         mockDb.aiLogs.push(log);
         return log;
       }

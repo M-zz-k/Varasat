@@ -10,10 +10,7 @@
  * Wolfram Cloud/Enterprise API, and local high-fidelity JS implementations.
  */
 
-const axios = require('axios');
-
-const WOLFRAM_API_URL = process.env.WOLFRAM_API_URL || null;
-const WOLFRAM_APP_ID = process.env.WOLFRAM_APP_ID || null;
+// Removed unused dependencies and variables.
 
 /**
  * 1. SMART CLAIM ROUTING ENGINE

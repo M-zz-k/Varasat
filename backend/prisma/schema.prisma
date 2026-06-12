@@ -12,8 +12,12 @@ model User {
   name         String
   phone        String   @unique
   email        String
-  aadhaar_hash String
-  pan_hash     String
+  passwordHash String
+  aadhaarHash  String
+  panHash      String
+  aadhaarLast4 String
+  panLast4     String
+  role         String   @default("claimant")
   language     String   @default("English")
   createdAt    DateTime @default(now())
 
@@ -23,10 +27,11 @@ model User {
 }
 
 model FamilyMember {
-  id       String @id @default(uuid())
+  id       String  @id @default(uuid())
   userId   String
   name     String
   relation String
+  isLiving Boolean @default(true)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -34,30 +39,32 @@ model FamilyMember {
 model DeceasedRecord {
   id            String   @id @default(uuid())
   userId        String
+  deceasedName  String
   deathDate     DateTime
   certificateId String   @unique
+
+  assets Asset[]
 }
 
 model Asset {
-  id              String @id @default(uuid())
-  deceasedName    String
-  type            String
-  institution     String
-  principal       Float
-  accruedInterest Float
-  totalValue      Float
-  status          String
+  id          String @id @default(uuid())
+  deceasedId  String
+  type        String
+  institution String
+  amount      Float
+  status      String
 
-  claims Claim[]
+  deceased DeceasedRecord @relation(fields: [deceasedId], references: [id], onDelete: Cascade)
+  claims   Claim[]
 }
 
 model Claim {
-  id                String @id @default(uuid())
-  assetId           String
-  claimantId        String
-  eligibility       String
-  monetizationTrack String
-  status            String
+  id          String @id @default(uuid())
+  assetId     String
+  claimantId  String
+  eligibility String
+  track       String
+  status      String
 
   asset     Asset      @relation(fields: [assetId], references: [id], onDelete: Cascade)
   claimant  User       @relation(fields: [claimantId], references: [id], onDelete: Cascade)

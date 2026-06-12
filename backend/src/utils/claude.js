@@ -11,6 +11,44 @@ const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY || null;
 async function draftAffidavit(claimantName, relation, deceasedName, assetsList, language = 'Hindi') {
   const assetsString = assetsList.map(a => `${a.type} at ${a.institution} (Value: ₹${a.amount})`).join(', ');
 
+  // Implement the real Claude API call if key is set
+  if (CLAUDE_API_KEY) {
+    try {
+      const prompt = `Draft a bilingual legal inheritance affidavit in English and ${language}. The claimant name is "${claimantName}" who is the "${relation}" of the deceased "${deceasedName}". The deceased left the following assets: ${assetsString}. Output your response strictly as a JSON object containing "englishText" and "vernacularText" fields. Do not output any other text or markdown formatting.`;
+      
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': CLAUDE_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1024,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const text = data.content[0].text.trim();
+        const parsed = JSON.parse(text);
+        return {
+          englishText: parsed.englishText,
+          vernacularText: parsed.vernacularText,
+          languageUsed: language,
+          generatedAt: new Date().toISOString()
+        };
+      } else {
+        console.warn(`Claude API error status: ${response.status}`);
+      }
+    } catch (err) {
+      console.warn("Claude API call failed. Falling back to static templates.", err);
+    }
+  }
+
+  // Fallback Templates
   const englishDraft = `
 AFFIDAVIT OF INHERITANCE
 I, ${claimantName}, daughter/son/spouse of deceased ${deceasedName}, aged about ____ years, residing at __________________________, do hereby solemnly affirm and state as follows:
@@ -41,7 +79,6 @@ I, ${claimantName}, daughter/son/spouse of deceased ${deceasedName}, aged about 
 4. ಸದರಿ ಆಸ್ತಿಗಳನ್ನು ಕಾನೂನುಬದ್ಧ ವಾರಸ್ದಾರರಿಗೆ ಬಿಡುಗಡೆ ಮಾಡಲು ನಾನು ವಿನಂತಿಸುತ್ತೇನೆ.
     `.trim();
   } else {
-    // General fallback
     localLanguageDraft = `[Bilingual content in ${language} will be generated here by Claude AI]`;
   }
 
@@ -57,6 +94,36 @@ I, ${claimantName}, daughter/son/spouse of deceased ${deceasedName}, aged about 
  * Generates an Indemnity Bond legal clause to protect partner banks
  */
 async function draftIndemnityBond(claimantName, deceasedName, assetType, institution, amount) {
+  if (CLAUDE_API_KEY) {
+    try {
+      const prompt = `Draft an Indemnity Bond clause for claim release. Claimant: "${claimantName}", Deceased: "${deceasedName}", Asset Type: "${assetType}", Institution: "${institution}", Amount: "₹${amount}". Output only the legal text clauses.`;
+      
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': CLAUDE_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1024,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.content[0].text.trim();
+      } else {
+        console.warn(`Claude API error status: ${response.status}`);
+      }
+    } catch (err) {
+      console.warn("Claude API call failed. Falling back to static templates.", err);
+    }
+  }
+
+  // Fallback Template
   return `
 INDEMNITY BOND FOR CLAIM RELEASE
 THIS INDEMNITY BOND is executed by ${claimantName} (hereinafter referred to as the Obligor/Claimant) in favor of ${institution} (hereinafter referred to as the Bank/Institution).

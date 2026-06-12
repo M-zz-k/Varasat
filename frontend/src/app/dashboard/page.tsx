@@ -4,23 +4,68 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   BarChart3, FileText, ArrowDownToLine,
-  ArrowLeft, RefreshCw, Wallet 
+  ArrowLeft, RefreshCw, Wallet, Check
 } from "lucide-react";
 import FamilyTreeGraph from "../../components/FamilyTreeGraph";
 import DashboardAnalytics from "../../components/DashboardAnalytics";
-import SecurityBadge from "../../components/SecurityBadge";
+import API_BASE from "../../lib/api";
 
 export default function ClaimantDashboard() {
   const [claims, setClaims] = useState<any[]>([]);
   const [selectedClaim, setSelectedClaim] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isGenerating, setIsGenerating] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  // Retrieve token and handle auto-registration if missing
+  useEffect(() => {
+    const initAuth = async () => {
+      let storedToken = localStorage.getItem("varasat_token");
+      if (!storedToken) {
+        // Auto-register a default mock claimant for demo fallback
+        try {
+          let response = await fetch(`${API_BASE}/api/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phone: "9876543210", password: "password123" })
+          });
+          let data = await response.json();
+          if (!data.success) {
+            response = await fetch(`${API_BASE}/api/auth/register`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: "Ramesh Kumar Junior",
+                phone: "9876543210",
+                email: "ramesh.jr@gmail.com",
+                password: "password123",
+                aadhaar: "123456789012",
+                pan: "ABCDE1234F",
+                role: "claimant"
+              })
+            });
+            data = await response.json();
+          }
+          if (data.success) {
+            storedToken = data.token;
+            localStorage.setItem("varasat_token", data.token);
+          }
+        } catch (err) {
+          console.error("Auto-registration fallback failed:", err);
+        }
+      }
+      setToken(storedToken);
+    };
+    initAuth();
+  }, []);
 
   // Fetch registered claims from Express API
   const fetchClaims = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/claims/list");
+      const response = await fetch(`${API_BASE}/api/claims/list`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       const data = await response.json();
       if (data.success && data.claims.length > 0) {
         setClaims(data.claims);
@@ -37,7 +82,9 @@ export default function ClaimantDashboard() {
 
   const fetchClaimDetails = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/claims/details/${id}`);
+      const response = await fetch(`${API_BASE}/api/claims/details/${id}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       const data = await response.json();
       if (data.success) {
         setSelectedClaim(data.claim);
@@ -92,12 +139,14 @@ export default function ClaimantDashboard() {
   };
 
   useEffect(() => {
-    fetchClaims();
-  }, []);
+    if (token) {
+      fetchClaims();
+    }
+  }, [token]);
 
   // PDF Download Trigger connecting to Express PDFKit generator
   const downloadDocument = async (docType: 'affidavit' | 'indemnity_bond') => {
-    if (!selectedClaim) return;
+    if (!selectedClaim || !token) return;
     setIsGenerating(docType);
 
     try {
@@ -113,9 +162,12 @@ export default function ClaimantDashboard() {
         language: "Hindi"
       };
 
-      const response = await fetch("http://localhost:5000/api/docs/generate-pdf", {
+      const response = await fetch(`${API_BASE}/api/docs/generate-pdf`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(payload)
       });
 
@@ -127,7 +179,8 @@ export default function ClaimantDashboard() {
         link.setAttribute('download', `Varasat_L3_${docType}.pdf`);
         document.body.appendChild(link);
         link.click();
-        link.parentNode?.removeChild(link);
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
         
         // Refresh details to update document lists
         fetchClaims();
@@ -136,7 +189,7 @@ export default function ClaimantDashboard() {
       }
     } catch (err) {
       console.error(err);
-      alert("Error generating document. Verify backend is running on Port 5000.");
+      alert("Error generating document. Verify backend is running.");
     } finally {
       setIsGenerating(null);
     }
@@ -150,16 +203,6 @@ export default function ClaimantDashboard() {
       return "bg-emerald-500 border-emerald-500 text-white";
     }
     return "bg-slate-100 border-slate-300 text-slate-400";
-  };
-
-  const getLineStatusClass = (stepIndex: number, currentStatus: string) => {
-    const steps = ["Submitted", "eKYC_Completed", "Approved", "Payout_Processed"];
-    const currentIdx = steps.indexOf(currentStatus);
-    
-    if (currentIdx > stepIndex) {
-      return "bg-emerald-500";
-    }
-    return "bg-slate-200";
   };
 
   if (isLoading) {
@@ -237,7 +280,7 @@ export default function ClaimantDashboard() {
                     {claim.asset?.type}
                   </span>
                   <span className="text-[10px] font-semibold text-slate-400">
-                    {new Date(claim.created_at).toLocaleDateString()}
+                    {new Date(claim.created_at || claim.createdAt).toLocaleDateString()}
                   </span>
                 </div>
                 

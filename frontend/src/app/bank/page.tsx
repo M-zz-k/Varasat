@@ -8,18 +8,59 @@ import {
 } from "lucide-react";
 import FamilyTreeGraph from "../../components/FamilyTreeGraph";
 import WolframAuditViewer from "../../components/WolframAuditViewer";
-import SecurityBadge from "../../components/SecurityBadge";
+import API_BASE from "../../lib/api";
 
 export default function BankEnterprisePortal() {
   const [claims, setClaims] = useState<any[]>([]);
   const [selectedClaim, setSelectedClaim] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isActioning, setIsActioning] = useState<boolean>(false);
+  const [token, setToken] = useState<string | null>(null);
+
+  // Authenticate bank officer on mount
+  useEffect(() => {
+    const authenticateBankOfficer = async () => {
+      try {
+        // Try to log in
+        let response = await fetch(`${API_BASE}/api/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone: "9999999999", password: "password123" })
+        });
+        let data = await response.json();
+        if (!data.success) {
+          // If login fails, register the bank officer
+          response = await fetch(`${API_BASE}/api/auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: "SBI Bank Officer",
+              phone: "9999999999",
+              email: "officer@sbi.co.in",
+              password: "password123",
+              aadhaar: "000000000000",
+              pan: "OFFIC1234E",
+              role: "bank_officer"
+            })
+          });
+          data = await response.json();
+        }
+        if (data.success) {
+          setToken(data.token);
+        }
+      } catch (err) {
+        console.error("Failed to authenticate bank officer:", err);
+      }
+    };
+    authenticateBankOfficer();
+  }, []);
 
   const fetchClaims = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/claims/list");
+      const response = await fetch(`${API_BASE}/api/claims/list`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       const data = await response.json();
       if (data.success && data.claims.length > 0) {
         setClaims(data.claims);
@@ -78,21 +119,26 @@ export default function BankEnterprisePortal() {
   };
 
   useEffect(() => {
-    fetchClaims();
-  }, []);
+    if (token) {
+      fetchClaims();
+    }
+  }, [token]);
 
   const handleUpdateClaimStatus = async (status: 'Approved' | 'Rejected') => {
-    if (!selectedClaim) return;
+    if (!selectedClaim || !token) return;
     setIsActioning(true);
 
     try {
       // Find the pending Indemnity Bond document
-      const bondDoc = selectedClaim.documents?.find((d: any) => d.type === 'Indemnity_Bond');
+      const bondDoc = selectedClaim.documents?.find((d: any) => d.type === 'Indemnity_Bond' || d.type === 'indemnity_bond');
       const docId = bondDoc ? bondDoc.id : "doc-3";
 
-      const response = await fetch("http://localhost:5000/api/claims/verify-doc", {
+      const response = await fetch(`${API_BASE}/api/claims/verify-doc`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({
           docId,
           status: status === 'Approved' ? 'Verified' : 'Rejected'
@@ -112,7 +158,7 @@ export default function BankEnterprisePortal() {
           return {
             ...c,
             status: status === 'Approved' ? 'Approved' : 'Rejected',
-            documents: c.documents.map((d: any) => d.type === 'Indemnity_Bond' ? { ...d, verification_status: status === 'Approved' ? 'Verified' : 'Rejected' } : d)
+            documents: c.documents.map((d: any) => d.type === 'Indemnity_Bond' || d.type === 'indemnity_bond' ? { ...d, verification_status: status === 'Approved' ? 'Verified' : 'Rejected' } : d)
           };
         }
         return c;
@@ -197,7 +243,7 @@ export default function BankEnterprisePortal() {
                   </div>
                   <div className="text-right">
                     <span className="text-[9px] text-slate-400 block uppercase">Routing Track</span>
-                    <span className="text-xs font-bold text-gold">{claim.track.replace('_', ' ')}</span>
+                    <span className="text-xs font-bold text-gold">{claim.track ? claim.track.replace('_', ' ') : ''}</span>
                   </div>
                 </div>
               </div>
@@ -223,11 +269,20 @@ export default function BankEnterprisePortal() {
 
               <div className="space-y-4">
                 
-                <SecurityBadge
-                  l1Status="Verified"
-                  l2Status="Verified"
-                  l3Status={selectedClaim.status === 'Approved' ? 'Verified' : 'Pending'}
-                />
+                {selectedClaim.documents && (
+                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3 text-xs">
+                    {selectedClaim.documents.map((d: any) => (
+                      <div key={d.id} className="flex justify-between items-center py-1 border-b border-slate-100 last:border-b-0">
+                        <span className="font-semibold text-primary">{d.type.replace('_', ' ')}:</span>
+                        <span className={`font-bold px-2 py-0.5 rounded ${
+                          d.verificationStatus === 'Verified' || d.verification_status === 'Verified' ? 'bg-emerald-500/15 text-emerald-600' : 'bg-gold/15 text-gold'
+                        }`}>
+                          {d.verificationStatus || d.verification_status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
               </div>
             </div>
@@ -296,7 +351,7 @@ export default function BankEnterprisePortal() {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-slate-50 px-6 py-4 text-center text-xs text-slate-500 mt-10">
-        <p>© 2026 Varasat Partner Enterprise Platform. Integrated with RBI DBR systems.</p>
+        <p>© 2026 Varasat Partner Enterprise Portal. Integrated with RBI DBR systems.</p>
       </footer>
     </div>
   );

@@ -1,4 +1,23 @@
 require('dotenv').config();
+
+// Startup Validations
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 64) {
+  console.error('FATAL: JWT_SECRET must be set and at least 64 chars');
+  process.exit(1);
+}
+
+const encryptionKey = process.env.ENCRYPTION_KEY;
+if (!encryptionKey || Buffer.from(encryptionKey, 'hex').length !== 32) {
+  console.error('FATAL: ENCRYPTION_KEY must be a 64-char hex string (32 bytes)');
+  process.exit(1);
+}
+
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+if (process.env.NODE_ENV === 'production' && !process.env.FRONTEND_URL) {
+  console.error('FATAL: FRONTEND_URL must be set in production');
+  process.exit(1);
+}
+
 const express = require('express');
 const cors = require('cors');
 
@@ -12,9 +31,10 @@ const PORT = process.env.PORT || 5000;
 
 // Enable CORS for frontend requests
 app.use(cors({
-  origin: '*', // Allow frontend development servers
+  origin: frontendUrl,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 // Request body parsers

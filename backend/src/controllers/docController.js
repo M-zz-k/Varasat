@@ -17,11 +17,6 @@ async function generateLegalDocumentPdf(req, res) {
     // Initialize PDFDocument
     const doc = new PDFDocument({ margin: 50 });
 
-    // Set headers for PDF download
-    res.setHeader('Content-disposition', `attachment; filename="Varasat_L3_${docType}.pdf"`);
-    res.setHeader('Content-type', 'application/pdf');
-    doc.pipe(res);
-
     // Styling Colors matching Visual Identity
     const deepBlue = '#0A2540';
     const gold = '#D4AF37';
@@ -113,23 +108,23 @@ async function generateLegalDocumentPdf(req, res) {
        .text('L2 DigiLocker: PASS', 245, yPos + 13, { width: 120, align: 'left' })
        .text('L3 indemnity: PASS', 245, yPos + 21, { width: 120, align: 'left' });
 
-    doc.end();
-
-    // If claimId exists, record document in database
+    // If claimId exists, record document in database BEFORE ending response stream
     if (claimId) {
-      try {
-        await db.documents.create({
-          data: {
-            claim_id: claimId,
-            type: docType === 'indemnity_bond' ? 'Indemnity_Bond' : 'Affidavit',
-            file_url: `/docs/generated_${docType}_${claimId}.pdf`,
-            verification_status: 'Verified'
-          }
-        });
-      } catch (err) {
-        console.error('Failed to log document generation in database:', err);
-      }
+      await db.documents.create({
+        data: {
+          claimId: claimId,
+          type: docType === 'indemnity_bond' ? 'Indemnity_Bond' : 'Affidavit',
+          fileUrl: `/docs/generated_${docType}_${claimId}.pdf`,
+          verificationStatus: 'Verified'
+        }
+      });
     }
+
+    // Set headers for PDF download
+    res.setHeader('Content-disposition', `attachment; filename="Varasat_L3_${docType}.pdf"`);
+    res.setHeader('Content-type', 'application/pdf');
+    doc.pipe(res);
+    doc.end();
 
   } catch (error) {
     console.error('PDF generation error:', error);

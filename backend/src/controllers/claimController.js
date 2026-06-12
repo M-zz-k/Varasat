@@ -54,7 +54,7 @@ async function routeClaim(req, res) {
       hasNominee,
       nomineeMatchesClaimant,
       hasFamilyDispute,
-      unanimousConsent,
+      unanimousConsent: unanimousConsent ?? false,
       missingHeirs
     });
 
@@ -111,16 +111,17 @@ async function createClaim(req, res) {
     // Create Deceased Record
     const deceased = await db.deceasedRecords.create({
       data: {
-        user_id: claimantId,
-        death_date: new Date(deathDate),
-        certificate_id: certificateId
+        userId: claimantId,
+        deceasedName,
+        deathDate: new Date(deathDate),
+        certificateId: certificateId
       }
     });
 
     // Create Asset Record
     const asset = await db.assets.create({
       data: {
-        deceased_id: deceased.id,
+        deceasedId: deceased.id,
         type: assetType,
         institution: institution,
         amount: parseFloat(amount),
@@ -132,9 +133,10 @@ async function createClaim(req, res) {
     if (familyMembers && familyMembers.length > 0) {
       await db.familyMembers.createMany({
         data: familyMembers.map(fm => ({
-          user_id: claimantId,
+          userId: claimantId,
           name: fm.name,
-          relation: fm.relation
+          relation: fm.relation,
+          isLiving: fm.isLiving ?? true
         }))
       });
     }
@@ -145,7 +147,7 @@ async function createClaim(req, res) {
       hasNominee: routingData?.hasNominee,
       nomineeMatchesClaimant: routingData?.nomineeMatchesClaimant,
       hasFamilyDispute: routingData?.hasFamilyDispute,
-      unanimousConsent: routingData?.unanimousConsent || true,
+      unanimousConsent: routingData?.unanimousConsent ?? false,
       missingHeirs: routingData?.missingHeirs || false
     });
 
@@ -157,8 +159,8 @@ async function createClaim(req, res) {
     // Create Claim
     const claim = await db.claims.create({
       data: {
-        asset_id: asset.id,
-        claimant_id: claimantId,
+        assetId: asset.id,
+        claimantId: claimantId,
         eligibility: routingInfo.eligibility,
         status: 'Submitted',
         track: track
@@ -168,19 +170,19 @@ async function createClaim(req, res) {
     // Auto-create initial L1/L2 verified documents
     await db.documents.create({
       data: {
-        claim_id: claim.id,
+        claimId: claim.id,
         type: 'Aadhaar_eKYC',
-        file_url: `/docs/ekyc_${claimantId}.pdf`,
-        verification_status: 'Verified'
+        fileUrl: `/docs/ekyc_${claimantId}.pdf`,
+        verificationStatus: 'Verified'
       }
     });
 
     await db.documents.create({
       data: {
-        claim_id: claim.id,
+        claimId: claim.id,
         type: 'Death_Certificate',
-        file_url: `/docs/death_cert_${certificateId}.pdf`,
-        verification_status: 'Verified'
+        fileUrl: `/docs/death_cert_${certificateId}.pdf`,
+        verificationStatus: 'Verified'
       }
     });
 
@@ -253,18 +255,18 @@ async function verifyDocument(req, res) {
 
     const doc = await db.documents.update({
       where: { id: docId },
-      data: { verification_status: status }
+      data: { verificationStatus: status }
     });
 
     // If all documents for this claim are verified, update claim status
     const claimDocs = await db.documents.findMany({
-      where: { claim_id: doc.claim_id }
+      where: { claimId: doc.claimId }
     });
 
-    const allVerified = claimDocs.every(d => d.verification_status === 'Verified');
+    const allVerified = claimDocs.every(d => d.verificationStatus === 'Verified');
     if (allVerified) {
       await db.claims.update({
-        where: { id: doc.claim_id },
+        where: { id: doc.claimId },
         data: { status: 'Approved' }
       });
     }

@@ -7,6 +7,7 @@ import {
   HelpCircle, UserCheck, Plus, Landmark, Trash2, ChevronRight 
 } from "lucide-react";
 import FamilyTreeGraph from "../../components/FamilyTreeGraph";
+import API_BASE from "../../lib/api";
 
 // Define message structure
 interface Message {
@@ -30,6 +31,7 @@ export default function VarasatMitraPage() {
     name: "",
     phone: "",
     email: "",
+    password: "",
     aadhaar: "",
     pan: ""
   });
@@ -110,18 +112,19 @@ export default function VarasatMitraPage() {
   // Step 2: Register Claimant
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userData.name || !userData.phone || !userData.email) return;
+    if (!userData.name || !userData.phone || !userData.email || !userData.password) return;
 
     addMessage("user", `My name is ${userData.name}. Email: ${userData.email}`);
     
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: userData.name,
           phone: userData.phone,
           email: userData.email,
+          password: userData.password,
           aadhaar: userData.aadhaar || "123456789012",
           pan: userData.pan || "ABCDE1234F",
           language: language
@@ -154,7 +157,7 @@ export default function VarasatMitraPage() {
     addMessage("user", `Submitting eKYC verification OTP...`);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/ekyc", {
+      const response = await fetch(`${API_BASE}/api/auth/ekyc`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ aadhaarNumber: userData.aadhaar || "123456789012", otp: otpCode })
@@ -187,7 +190,7 @@ export default function VarasatMitraPage() {
     addMessage("user", `Fetching certificate ${deceasedData.certificateId} from DigiLocker...`);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/digilocker", {
+      const response = await fetch(`${API_BASE}/api/auth/digilocker`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ certificateId: deceasedData.certificateId })
@@ -229,9 +232,12 @@ export default function VarasatMitraPage() {
   // Calculate Apportionment
   const triggerApportionment = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/claims/apportion", {
+      const response = await fetch(`${API_BASE}/api/claims/apportion`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ familyMembers, deceasedName: deceasedData.name })
       });
       const data = await response.json();
@@ -256,10 +262,10 @@ export default function VarasatMitraPage() {
   };
 
   useEffect(() => {
-    if (currentStep === "family") {
+    if (currentStep === "family" && token) {
       triggerApportionment();
     }
-  }, [familyMembers]);
+  }, [familyMembers, token]);
 
   const handleConfirmFamily = () => {
     addMessage("user", "Confirmed family members tree.");
@@ -274,9 +280,12 @@ export default function VarasatMitraPage() {
 
     try {
       // Fetch projections
-      const resProj = await fetch("http://localhost:5000/api/assets/project", {
+      const resProj = await fetch(`${API_BASE}/api/assets/project`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({
           principal: assetData.amount,
           interestRate: assetData.interestRate,
@@ -290,9 +299,12 @@ export default function VarasatMitraPage() {
       }
 
       // Fetch routing and business track
-      const resRoute = await fetch("http://localhost:5000/api/claims/route", {
+      const resRoute = await fetch(`${API_BASE}/api/claims/route`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({
           assetAmount: assetData.amount,
           hasNominee: assetData.hasNominee,
@@ -311,7 +323,7 @@ export default function VarasatMitraPage() {
     } catch (err) {
       // Fallback projections
       const p = parseFloat(assetData.amount);
-      const interest = Math.round(p * 0.52); // Mock 8 years of quarterly compounding
+      const interest = Math.round(p * 0.52); // Mock 8 years of compounding
       setFinancialProjections({
         principal: p,
         accruedInterest: interest,
@@ -335,7 +347,7 @@ export default function VarasatMitraPage() {
     addMessage("user", "Registering my claim officially...");
     
     try {
-      const response = await fetch("http://localhost:5000/api/claims/create", {
+      const response = await fetch(`${API_BASE}/api/claims/create`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -386,6 +398,7 @@ export default function VarasatMitraPage() {
             name: "Ramesh Kumar Junior",
             phone: "9876543210",
             email: "ramesh.jr@gmail.com",
+            password: "password123",
             aadhaar: "123456789012",
             pan: "ABCDE1234F"
           }));
@@ -486,6 +499,14 @@ export default function VarasatMitraPage() {
                     placeholder="Email Address" 
                     value={userData.email}
                     onChange={e => setUserData({...userData, email: e.target.value})}
+                    className="border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-primary focus:outline-none focus:ring-1 focus:ring-gold"
+                    required
+                  />
+                  <input 
+                    type="password" 
+                    placeholder="Password" 
+                    value={userData.password}
+                    onChange={e => setUserData({...userData, password: e.target.value})}
                     className="border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-primary focus:outline-none focus:ring-1 focus:ring-gold"
                     required
                   />

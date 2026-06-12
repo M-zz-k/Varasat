@@ -1,8 +1,7 @@
 const db = require('../config/db');
-const { encrypt, decrypt } = require('../utils/crypto');
+const { encrypt } = require('../utils/crypto');
 const jwt = require('jsonwebtoken');
-
-const JWT_SECRET = process.env.JWT_SECRET || 'varasat_secret_key_12345';
+const bcrypt = require('bcryptjs');
 
 // L1: Aadhaar eKYC verification simulation
 async function verifyAadhaarEkyc(req, res) {
@@ -12,6 +11,14 @@ async function verifyAadhaarEkyc(req, res) {
     if (!aadhaarNumber || aadhaarNumber.length !== 12) {
       return res.status(400).json({ success: false, message: 'Invalid Aadhaar number. Must be 12 digits.' });
     }
+
+    if (process.env.NODE_ENV !== 'development') {
+      return res.status(501).json({ 
+        success: false, 
+        message: 'Real Aadhaar eKYC integration required in production.' 
+      });
+    }
+    // TODO: Replace with real UIDAI/MeitY sandbox API call
 
     if (otp !== '123456') { // Mock OTP verification
       return res.status(400).json({ success: false, message: 'Invalid OTP code. Use test code 123456.' });
@@ -85,9 +92,9 @@ async function fetchDigilockerDeathCertificate(req, res) {
 // User registration with AES encrypted identifiers
 async function register(req, res) {
   try {
-    const { name, phone, email, aadhaar, pan, language } = req.body;
+    const { name, phone, email, password, aadhaar, pan, language, role } = req.body;
 
-    if (!name || !phone || !email || !aadhaar || !pan) {
+    if (!name || !phone || !email || !password || !aadhaar || !pan) {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
 
@@ -95,18 +102,29 @@ async function register(req, res) {
     const encryptedAadhaar = encrypt(aadhaar);
     const encryptedPan = encrypt(pan);
 
+    // Get last-4 digits of identifiers
+    const aadhaarLast4 = aadhaar.slice(-4);
+    const panLast4 = pan.slice(-4);
+
+    // Hash the password with bcrypt
+    const passwordHash = await bcrypt.hash(password, 12);
+
     const user = await db.users.create({
       data: {
         name,
         phone,
         email,
-        aadhaar_hash: encryptedAadhaar,
-        pan_hash: encryptedPan,
+        passwordHash,
+        aadhaarHash: encryptedAadhaar,
+        panHash: encryptedPan,
+        aadhaarLast4,
+        panLast4,
+        role: role || 'claimant',
         language: language || 'English'
       }
     });
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     return res.status(201).json({
       success: true,
@@ -117,7 +135,8 @@ async function register(req, res) {
         name: user.name,
         phone: user.phone,
         email: user.email,
-        language: user.language
+        language: user.language,
+        role: user.role
       }
     });
   } catch (error) {
@@ -132,10 +151,10 @@ async function register(req, res) {
 // User Login simulation
 async function login(req, res) {
   try {
-    const { phone } = req.body;
+    const { phone, password } = req.body;
 
-    if (!phone) {
-      return res.status(400).json({ success: false, message: 'Phone number is required.' });
+    if (!phone || !password) {
+      return res.status(400).json({ success: false, message: 'Phone number and password are required.' });
     }
 
     let user = await db.users.findUnique({
@@ -143,11 +162,15 @@ async function login(req, res) {
     });
 
     if (!user) {
-      // For demo convenience, let's auto-register or return error
       return res.status(404).json({ success: false, message: 'User not found. Please register first.' });
     }
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Invalid phone number or password.' });
+    }
+
+    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     return res.status(200).json({
       success: true,
@@ -157,7 +180,8 @@ async function login(req, res) {
         name: user.name,
         phone: user.phone,
         email: user.email,
-        language: user.language
+        language: user.language,
+        role: user.role
       }
     });
   } catch (error) {
@@ -175,10 +199,6 @@ async function getProfile(req, res) {
       return res.status(404).json({ success: false, message: 'User not found.' });
     }
 
-    // Decrypt Aadhaar and PAN to show we can read them securely
-    const decryptedAadhaar = decrypt(user.aadhaar_hash);
-    const decryptedPan = decrypt(user.pan_hash);
-
     return res.status(200).json({
       success: true,
       user: {
@@ -187,11 +207,12 @@ async function getProfile(req, res) {
         phone: user.phone,
         email: user.email,
         language: user.language,
-        aadhaar: `XXXX-XXXX-${decryptedAadhaar.slice(-4)}`,
-        pan: `XXXXX${decryptedPan.slice(-4)}`
+        aadhaar: `XXXX-XXXX-${user.aadhaarLast4}`,
+        pan: `XXXXX${user.panLast4}`
       }
     });
   } catch (error) {
+    console.error('Get profile error:', error);
     return res.status(500).json({ success: false, message: 'Failed to retrieve profile.' });
   }
 }

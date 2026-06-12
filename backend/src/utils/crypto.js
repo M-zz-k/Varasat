@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 
 // Secret key for AES-256 must be exactly 32 bytes (256 bits).
-// We retrieve it from env, using a fallback for local testing if not set.
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6'; 
+// We retrieve it from env as a buffer, with no fallback.
+const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); 
 const IV_LENGTH = 12; // Standard 12-byte IV for GCM
 
 /**
@@ -14,7 +14,7 @@ function encrypt(text) {
   if (!text) return '';
   try {
     const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(ENCRYPTION_KEY), iv);
+    const cipher = crypto.createCipheriv('aes-256-gcm', ENCRYPTION_KEY, iv);
     
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
@@ -45,7 +45,7 @@ function decrypt(encryptedText) {
     const encryptedData = parts[1];
     const authTag = Buffer.from(parts[2], 'hex');
     
-    const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(ENCRYPTION_KEY), iv);
+    const decipher = crypto.createDecipheriv('aes-256-gcm', ENCRYPTION_KEY, iv);
     decipher.setAuthTag(authTag);
     
     let decrypted = decipher.update(encryptedData, 'hex', 'utf8');

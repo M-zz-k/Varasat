@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'varasat_secret_key_12345';
 
 /**
  * Express middleware to verify JWT authorization headers
@@ -13,8 +12,9 @@ function authenticateToken(req, res, next) {
   }
 
   try {
-    const verified = jwt.verify(token, JWT_SECRET);
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = verified.userId;
+    req.userRole = verified.role; // Extract role from JWT
     next();
   } catch (error) {
     console.error('JWT verification error:', error);
@@ -22,4 +22,19 @@ function authenticateToken(req, res, next) {
   }
 }
 
-module.exports = authenticateToken;
+/**
+ * Express middleware to restrict endpoints by user role
+ */
+function requireRole(role) {
+  return (req, res, next) => {
+    if (req.userRole !== role) {
+      return res.status(403).json({ success: false, message: 'Forbidden.' });
+    }
+    next();
+  };
+}
+
+module.exports = {
+  authenticateToken,
+  requireRole
+};
