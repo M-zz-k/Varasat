@@ -90,7 +90,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-white via-[#F8F9FA] to-[#EFF2F5] flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-[#F4F9FD] via-[#E9F3FC] to-[#DCEBF7] flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
       
       {/* ── Anti-gravity background layer ── */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
