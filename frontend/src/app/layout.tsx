@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
-import { Noto_Sans } from "next/font/google";
+import { Noto_Sans, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-plus-jakarta",
+  display: "swap",
+});
 
 const notoSans = Noto_Sans({
   subsets: ["latin", "devanagari"],
@@ -21,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${notoSans.variable} h-full antialiased`}>
+    <html lang="en" className={`${plusJakarta.variable} ${notoSans.variable} h-full antialiased`}>
       <body className="font-sans min-h-screen bg-warm-white text-primary flex flex-col">
         {children}
       </body>
