@@ -205,7 +205,17 @@ async function createClaim(req, res) {
  */
 async function listClaims(req, res) {
   try {
-    const claims = await db.claims.findMany();
+    const claims = await db.claims.findMany({
+      include: {
+        asset: {
+          include: {
+            deceased: true
+          }
+        },
+        claimant: true,
+        documents: true
+      }
+    });
     return res.status(200).json({
       success: true,
       claims
@@ -224,7 +234,16 @@ async function getClaimDetails(req, res) {
   try {
     const { id } = req.params;
     const claim = await db.claims.findUnique({
-      where: { id }
+      where: { id },
+      include: {
+        asset: {
+          include: {
+            deceased: true
+          }
+        },
+        claimant: true,
+        documents: true
+      }
     });
 
     if (!claim) {

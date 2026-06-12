@@ -126,12 +126,18 @@ const db = {
     findMany: async (args) => {
       if (isMock) {
         // Resolve nested models for lists
-        return mockDb.claims.map(c => ({
-          ...c,
-          asset: mockDb.assets.find(a => a.id === c.assetId),
-          claimant: mockDb.users.find(u => u.id === c.claimantId),
-          documents: mockDb.documents.filter(d => d.claimId === c.id)
-        }));
+        return mockDb.claims.map(c => {
+          const asset = mockDb.assets.find(a => a.id === c.assetId);
+          return {
+            ...c,
+            asset: asset ? {
+              ...asset,
+              deceased: mockDb.deceasedRecords.find(d => d.id === asset.deceasedId)
+            } : null,
+            claimant: mockDb.users.find(u => u.id === c.claimantId),
+            documents: mockDb.documents.filter(d => d.claimId === c.id)
+          };
+        });
       }
       return prisma.claim.findMany(args);
     },
@@ -139,9 +145,13 @@ const db = {
       if (isMock) {
         const c = mockDb.claims.find(cl => cl.id === args.where.id);
         if (!c) return null;
+        const asset = mockDb.assets.find(a => a.id === c.assetId);
         return {
           ...c,
-          asset: mockDb.assets.find(a => a.id === c.assetId),
+          asset: asset ? {
+            ...asset,
+            deceased: mockDb.deceasedRecords.find(d => d.id === asset.deceasedId)
+          } : null,
           claimant: mockDb.users.find(u => u.id === c.claimantId),
           documents: mockDb.documents.filter(d => d.claimId === c.id)
         };

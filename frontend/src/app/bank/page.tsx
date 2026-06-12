@@ -235,7 +235,7 @@ export default function BankEnterprisePortal() {
                 </div>
                 
                 <h3 className="font-extrabold text-base mt-3">{claim.claimant?.name}</h3>
-                <p className={`text-xs mt-1 ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-400'}`}>Deceased: Ramesh Kumar Senior</p>
+                <p className={`text-xs mt-1 ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-400'}`}>Deceased: {claim.asset?.deceased?.deceasedName || "Ramesh Kumar Senior"}</p>
                 
                 <div className={`flex justify-between items-center mt-4 border-t pt-3 ${selectedClaim?.id === claim.id ? 'border-white/20' : 'border-white/10'}`}>
                   <div>
@@ -304,7 +304,7 @@ export default function BankEnterprisePortal() {
                 {/* SVG Tree */}
                 <div className="glass-card-dark text-white rounded-3xl p-6 shadow-2xl">
                   <FamilyTreeGraph 
-                    deceasedName="Ramesh Kumar Senior" 
+                    deceasedName={selectedClaim.asset?.deceased?.deceasedName || "Ramesh Kumar Senior"} 
                     shares={selectedClaim.familyMembers || []} 
                   />
                 </div>
@@ -317,7 +317,7 @@ export default function BankEnterprisePortal() {
                       <span>Wolfram Succession Audit Trace</span>
                     </h3>
                     <WolframAuditViewer
-                      wolframCode={`(* HSA Succession Audit Logs *)\nDeceased = "Ramesh Kumar Senior";\nHeirs = {"Savitri Devi", "Ramesh Kumar Jr", "Sunita Kumari"};\nShareCount = Length[Heirs]; (* 3 *)\nBasePercentage = 1.0 / ShareCount * 100;\nApportionment = Table[{Heirs[[i]], BasePercentage}, {i, 1, ShareCount}];\nPrint[Apportionment];\n(* Output: Each heir receives 33.33% under HSA Class I *)`}
+                      wolframCode={`(* HSA Succession Audit Logs *)\nDeceased = "${selectedClaim.asset?.deceased?.deceasedName || "Ramesh Kumar Senior"}";\nHeirs = {"Savitri Devi", "Ramesh Kumar Jr", "Sunita Kumari"};\nShareCount = Length[Heirs]; (* 3 *)\nBasePercentage = 1.0 / ShareCount * 100;\nApportionment = Table[{Heirs[[i]], BasePercentage}, {i, 1, ShareCount}];\nPrint[Apportionment];\n(* Output: Each heir receives 33.33% under HSA Class I *)`}
                       eligibility={selectedClaim.eligibility}
                       shares={selectedClaim.familyMembers || []}
                     />
