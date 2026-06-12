@@ -1,16 +1,90 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Shield, Sparkles, MessageSquare, BarChart3, Landmark, ArrowRight, HelpCircle } from "lucide-react";
-import ParticleBackground from "../components/ParticleBackground";
+
+const t = {
+  en: {
+    tagline: "RBI Unclaimed Deposits Circular Compliant",
+    headline: <>Recover Your Family's <span className="text-gold underline decoration-gold/40">Dormant Wealth</span></>,
+    sub: "An AI-powered recovery agent designed for Indian families. Seamlessly locate, verify, and mathematically distribute deceased members' assets across Banks, LIC policies, and Mutual Funds.",
+    mitra: "Varasat Mitra", mitraSub: "Start Claim (दावा शुरू करें)",
+    dashboard: "Claimant Dashboard", dashBtn: "Open Analytics Dashboard",
+    bank: "Bank Partner Portal", bankBtn: "Enter Bank Portal",
+    secLabel: "Language Supported:",
+  },
+  hi: {
+    tagline: "RBI अदावा जमा परिपत्र अनुपालित",
+    headline: <>अपने परिवार की <span className="text-gold underline decoration-gold/40">सुप्त संपत्ति</span> वापस पाएं</>,
+    sub: "भारतीय परिवारों के लिए AI-संचालित रिकवरी एजेंट। बैंक, LIC पॉलिसी और म्यूचुअल फंड में दिवंगत सदस्यों की संपत्ति खोजें, सत्यापित करें और वितरित करें।",
+    mitra: "विरासत मित्र", mitraSub: "दावा शुरू करें",
+    dashboard: "दावेदार डैशबोर्ड", dashBtn: "एनालिटिक्स डैशबोर्ड खोलें",
+    bank: "बैंक पार्टनर पोर्टल", bankBtn: "बैंक पोर्टल में प्रवेश करें",
+    secLabel: "भाषा समर्थित:",
+  },
+  kn: {
+    tagline: "RBI ಅನ್ಕ್ಲೇಮ್ಡ್ ಡೆಪಾಸಿಟ್ ಸರ್ಕ್ಯುಲರ್ ಅನುಸರಣೆ",
+    headline: <>ನಿಮ್ಮ ಆಸ್ತಿಯನ್ನು <span className="text-gold underline decoration-gold/40">ಮರಳಿ ಪಡೆಯಿರಿ</span></>,
+    sub: "ಭಾರತೀಯ ಕುಟುಂಬಗಳಿಗಾಗಿ AI-ಚಾಲಿತ ರಿಕವರಿ ಏಜೆಂಟ್. ಬ್ಯಾಂಕ್, LIC ಮತ್ತು ಮ್ಯೂಚ್ಯುಅಲ್ ಫಂಡ್ಗಳಲ್ಲಿ ಆಸ್ತಿ ಪತ್ತೆ, ಪರಿಶೀಲನೆ ಮತ್ತು ವಿತರಣೆ ಮಾಡಿ.",
+    mitra: "ವಾರಸಾತ್ ಮಿತ್ರ", mitraSub: "ದಾವೆ ಪ್ರಾರಂಭಿಸಿ",
+    dashboard: "ದಾವೆದಾರ ಡ್ಯಾಶ್ಬೋರ್ಡ್", dashBtn: "ಅನಾಲಿಟಿಕ್ಸ್ ಡ್ಯಾಶ್ಬೋರ್ಡ್ ತೆರೆಯಿರಿ",
+    bank: "ಬ್ಯಾಂಕ್ ಪಾರ್ಟನರ್ ಪೋರ್ಟಲ್", bankBtn: "ಬ್ಯಾಂಕ್ ಪೋರ್ಟಲ್ ಪ್ರವೇಶಿಸಿ",
+    secLabel: "ಭಾಷೆ ಬೆಂಬಲಿತ:",
+  },
+} as const;
 
 export default function LandingPage() {
+  const [lang, setLang] = useState<"en" | "hi" | "kn">("en");
+
   return (
-    <div className="min-h-screen bg-warm-white flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
-      <ParticleBackground />
+    <div className="min-h-screen bg-[#F8F9FA] flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
+      
+      {/* ── Anti-gravity background layer ── */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        {/* Soft radial glow — top left, navy */}
+        <div className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full bg-[#0A2540]/6 blur-[90px] animate-[bgDrift_18s_ease-in-out_infinite]" />
+
+        {/* Soft radial glow — bottom right, gold */}
+        <div className="absolute -bottom-40 -right-24 w-[480px] h-[480px] rounded-full bg-[#D4AF37]/8 blur-[100px] animate-[bgDrift_22s_ease-in-out_infinite_reverse]" />
+
+        {/* Thin diagonal grid lines — like a ledger/register feel */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+              <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#0A2540" strokeWidth="0.8"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+
+        {/* Floating gold dots — 6 particles, staggered */}
+        {[
+          { size: 5,  top: "12%",  left: "8%",  delay: "0s",   dur: "9s"  },
+          { size: 3,  top: "35%",  left: "92%", delay: "1.5s", dur: "11s" },
+          { size: 6,  top: "68%",  left: "5%",  delay: "3s",   dur: "8s"  },
+          { size: 4,  top: "80%",  left: "80%", delay: "0.8s", dur: "13s" },
+          { size: 3,  top: "20%",  left: "55%", delay: "2s",   dur: "10s" },
+          { size: 5,  top: "55%",  left: "45%", delay: "4s",   dur: "12s" },
+        ].map((p, i) => (
+          <div
+            key={i}
+            style={{
+              width: p.size, height: p.size,
+              top: p.top, left: p.left,
+              animationDelay: p.delay,
+              animationDuration: p.dur,
+              // Map custom dur variable to inline style
+              animation: `floatDot ${p.dur} ease-in-out infinite`
+            }}
+            className="absolute rounded-full bg-[#D4AF37]/40"
+          />
+        ))}
+      </div>
+      {/* ── end background layer ── */}
       
       {/* Sleek Premium Header */}
-      <header className="border-b border-gold/20 bg-primary/95 text-white backdrop-blur-md sticky top-0 z-50 px-6 py-4 shadow-lg transition-all duration-300">
+      <header className="border-b border-gold/20 bg-primary/95 text-white backdrop-blur-md sticky top-0 px-6 py-4 shadow-lg transition-all duration-300 relative z-10">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="bg-gold p-2 rounded-lg flex items-center justify-center shadow-md shadow-gold/20 float">
@@ -31,25 +105,41 @@ export default function LandingPage() {
               <Shield className="w-3.5 h-3.5 text-gold" />
               <span>Aadhaar & DigiLocker Integrated</span>
             </div>
+
+            {/* Language toggle pill */}
+            <div className="flex items-center bg-white/10 rounded-full p-0.5 border border-white/20 text-[11px] font-bold">
+              {(["en","hi","kn"] as const).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={`px-3 py-1 rounded-full transition-all duration-200 cursor-pointer ${
+                    lang === l
+                      ? "bg-gold text-primary shadow"
+                      : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  {l === "en" ? "EN" : l === "hi" ? "हिं" : "ಕನ್"}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-12 flex flex-col justify-center space-y-12">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-12 flex flex-col justify-center space-y-12 relative z-10">
         
         {/* Hero Banner Section */}
         <section className="text-center space-y-6 max-w-3xl mx-auto py-6 drift-in" style={{ animationDelay: '0.1s' }}>
           <div className="inline-flex items-center space-x-2 bg-gold/10 border border-gold/30 text-primary px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">
             <Landmark className="w-3.5 h-3.5 text-gold" />
-            <span>RBI Unclaimed Deposits Circular Compliant</span>
+            <span>{t[lang].tagline}</span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-primary leading-tight">
-            Recover Your Family's <span className="text-gold underline decoration-gold/40">Dormant Wealth</span>
+            {t[lang].headline}
           </h1>
           <p className="text-lg text-slate-700 leading-relaxed font-light">
-            An AI-powered recovery agent designed for Indian families. Seamlessly locate, verify, 
-            and mathematically distribute deceased members' assets across Banks, LIC policies, and Mutual Funds.
+            {t[lang].sub}
           </p>
         </section>
 
@@ -65,7 +155,7 @@ export default function LandingPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <h2 className="text-2xl font-bold">Varasat Mitra</h2>
+                  <h2 className="text-2xl font-bold">{t[lang].mitra}</h2>
                   <span className="text-[10px] bg-success/20 text-success border border-success/30 px-2 py-0.5 rounded font-bold uppercase tracking-wider">Voice</span>
                 </div>
                 <p className="text-sm text-slate-300 leading-relaxed">
@@ -76,12 +166,12 @@ export default function LandingPage() {
             </div>
             <div className="pt-8 space-y-4">
               <div className="text-[11px] text-gold border-t border-white/10 pt-4 flex justify-between">
-                <span>Language Supported:</span>
-                <span className="font-semibold">हिंदी • कन्नड़ • தமிழ் • తెలుగు</span>
+                <span>{t[lang].secLabel}</span>
+                <span className="font-semibold">हिंदी • ಕನ್ನಡ • தமிழ் • తెలుగు</span>
               </div>
               <Link href="/mitra">
                 <button className="w-full bg-gold hover:bg-gold/90 text-primary font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-gold/20 cursor-pointer">
-                  <span>Start Claim (दावा शुरू करें)</span>
+                  <span>{t[lang].mitraSub}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </Link>
@@ -96,7 +186,7 @@ export default function LandingPage() {
                 <BarChart3 className="w-6 h-6 text-gold" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-bold text-primary">Claimant Dashboard</h2>
+                <h2 className="text-2xl font-bold text-primary">{t[lang].dashboard}</h2>
                 <p className="text-sm text-slate-600 leading-relaxed">
                   Track the progress of registered claims in real-time. View mathematically generated 
                   heir apportionments (HSA Class I), compounding accrued interest vs principal, and download indemnity documents.
@@ -110,7 +200,7 @@ export default function LandingPage() {
               </div>
               <Link href="/dashboard">
                 <button className="w-full bg-primary hover:bg-primary/95 text-white font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg cursor-pointer">
-                  <span className="text-gold font-bold">Open Analytics Dashboard</span>
+                  <span className="text-gold font-bold">{t[lang].dashBtn}</span>
                   <ArrowRight className="w-4 h-4 text-gold" />
                 </button>
               </Link>
@@ -125,7 +215,7 @@ export default function LandingPage() {
                 <Landmark className="w-6 h-6 text-primary" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-bold text-primary">Bank Partner Portal</h2>
+                <h2 className="text-2xl font-bold text-primary">{t[lang].bank}</h2>
                 <p className="text-sm text-slate-600 leading-relaxed">
                   Enterprise verification SaaS dashboard for banks and insurance providers. Review digital eKYC logs, 
                   audit DigiLocker-linked records, and verify automated indemnity bonds for fast-track processing.
@@ -139,7 +229,7 @@ export default function LandingPage() {
               </div>
               <Link href="/bank">
                 <button className="w-full bg-white hover:bg-slate-50 text-primary border-2 border-primary font-bold py-3 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-md cursor-pointer">
-                  <span>Enter Bank Portal</span>
+                  <span>{t[lang].bankBtn}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </Link>
@@ -177,7 +267,7 @@ export default function LandingPage() {
       </main>
 
       {/* Corporate Footer */}
-      <footer className="border-t border-slate-200 bg-slate-50 px-6 py-6 text-center text-xs text-slate-500">
+      <footer className="border-t border-slate-200 bg-slate-50 px-6 py-6 text-center text-xs text-slate-500 relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
           <p>© 2026 Varasat Systems Private Limited. Secured under Digital India Framework.</p>
           <div className="flex space-x-4">
