@@ -253,100 +253,115 @@ export default function BankEnterprisePortal() {
         </div>
 
         {/* Right Side: Claims Auditor Details */}
-        {selectedClaim && (
-          <div className="lg:col-span-2 space-y-8">
-            
-            {/* L1/L2/L3 Audit Dashboard */}
-            <div className="glass-card-dark rounded-3xl p-6 shadow-2xl space-y-6">
-              <div className="flex justify-between items-center border-b border-white/10 pb-3">
-                <h3 className="text-base font-extrabold text-white flex items-center space-x-1.5">
-                  <ShieldCheck className="w-5 h-5 text-gold float" />
-                  <span>3-Layer Security Audit Checklist</span>
-                </h3>
-                <span className="text-xs font-bold text-slate-400">
-                  Ref: {selectedClaim.id.slice(0, 8).toUpperCase()}
-                </span>
-              </div>
-
-              <div className="space-y-4">
-                
-                {selectedClaim.documents && (
-                  <div className="bg-[#0A2540]/60 border border-gold/20 rounded-2xl p-4 space-y-3 text-xs">
-                    {selectedClaim.documents.map((d: any) => (
-                      <div key={d.id} className="flex justify-between items-center py-1 border-b border-white/5 last:border-b-0">
-                        <span className="font-semibold text-slate-300">{d.type.replace('_', ' ')}:</span>
-                        <span className={`font-bold px-2 py-0.5 rounded ${
-                          d.verificationStatus === 'Verified' || d.verification_status === 'Verified' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gold/20 text-gold'
-                        }`}>
-                          {d.verificationStatus || d.verification_status}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-              </div>
-            </div>
-
-            {/* Apportionment Visual and Wolfram Code auditor */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {selectedClaim && (() => {
+          const hasAffidavit = selectedClaim.documents?.some((d: any) => d.type?.toLowerCase() === 'affidavit');
+          return (
+            <div className="lg:col-span-2 space-y-8">
               
-              {/* SVG Tree */}
-              <div className="glass-card-dark text-white rounded-3xl p-6 shadow-2xl">
-                <FamilyTreeGraph 
-                  deceasedName="Ramesh Kumar Senior" 
-                  shares={selectedClaim.familyMembers || []} 
-                />
+              {/* L1/L2/L3 Audit Dashboard */}
+              <div className="glass-card-dark rounded-3xl p-6 shadow-2xl space-y-6">
+                <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                  <h3 className="text-base font-extrabold text-white flex items-center space-x-1.5">
+                    <ShieldCheck className="w-5 h-5 text-gold float" />
+                    <span>3-Layer Security Audit Checklist</span>
+                  </h3>
+                  <span className="text-xs font-bold text-slate-400">
+                    Ref: {selectedClaim.id.slice(0, 8).toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="space-y-4">
+                  
+                  {selectedClaim.documents && (
+                    <div className="bg-[#0A2540]/60 border border-gold/20 rounded-2xl p-4 space-y-3 text-xs">
+                      {selectedClaim.documents.map((d: any) => (
+                        <div key={d.id} className="flex justify-between items-center py-1 border-b border-white/5 last:border-b-0">
+                          <span className="font-semibold text-slate-300">{d.type.replace('_', ' ')}:</span>
+                          <span className={`font-bold px-2 py-0.5 rounded ${
+                            d.verificationStatus === 'Verified' || d.verification_status === 'Verified' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gold/20 text-gold'
+                          }`}>
+                            {d.verificationStatus || d.verification_status}
+                          </span>
+                        </div>
+                      ))}
+                      {!hasAffidavit && (
+                        <div className="flex justify-between items-center py-1 border-b border-white/5 last:border-b-0">
+                          <span className="font-semibold text-slate-300">Affidavit:</span>
+                          <span className="font-bold px-2.5 py-0.5 rounded bg-red-500/20 text-red-400 animate-pulse uppercase text-[10px] tracking-wide">
+                            Awaiting Generation
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                </div>
               </div>
 
-              {/* Mathematical logs */}
-              <div className="glass-card-dark text-white rounded-3xl p-6 shadow-2xl flex flex-col justify-between">
-                <div>
-                  <h3 className="text-sm font-extrabold text-white border-b border-white/10 pb-2 mb-4 flex items-center space-x-1.5">
-                    <Users className="w-4 h-4 text-gold" />
-                    <span>Wolfram Succession Audit Trace</span>
-                  </h3>
-                  <WolframAuditViewer
-                    wolframCode={`(* HSA Succession Audit Logs *)\nDeceased = "Ramesh Kumar Senior";\nHeirs = {"Savitri Devi", "Ramesh Kumar Jr", "Sunita Kumari"};\nShareCount = Length[Heirs]; (* 3 *)\nBasePercentage = 1.0 / ShareCount * 100;\nApportionment = Table[{Heirs[[i]], BasePercentage}, {i, 1, ShareCount}];\nPrint[Apportionment];\n(* Output: Each heir receives 33.33% under HSA Class I *)`}
-                    eligibility={selectedClaim.eligibility}
-                    shares={selectedClaim.familyMembers || []}
+              {/* Apportionment Visual and Wolfram Code auditor */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                {/* SVG Tree */}
+                <div className="glass-card-dark text-white rounded-3xl p-6 shadow-2xl">
+                  <FamilyTreeGraph 
+                    deceasedName="Ramesh Kumar Senior" 
+                    shares={selectedClaim.familyMembers || []} 
                   />
                 </div>
 
-                {/* Approve/Reject Controls */}
-                <div className="flex gap-3 pt-4 border-t border-white/10 mt-4">
-                  {selectedClaim.status === 'Approved' ? (
-                    <div className="w-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold p-3.5 rounded-xl text-xs text-center flex items-center justify-center space-x-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                      <span>Claim Approved & Fund Release Authorized</span>
-                    </div>
-                  ) : (
-                    <>
-                      <button 
-                        onClick={() => handleUpdateClaimStatus('Rejected')}
-                        disabled={isActioning}
-                        className="border border-red-500/50 text-red-400 hover:bg-red-500/10 font-bold py-3 px-4 rounded-xl text-xs flex-1 cursor-pointer flex items-center justify-center space-x-1.5 transition-all duration-200"
-                      >
-                        <XCircle className="w-4 h-4" />
-                        <span>Reject Claim</span>
-                      </button>
-                      <button 
-                        onClick={() => handleUpdateClaimStatus('Approved')}
-                        disabled={isActioning}
-                        className="bg-[#075E54] hover:bg-[#128C7E] text-white font-bold py-3 px-4 rounded-xl text-xs flex-1 shadow cursor-pointer flex items-center justify-center space-x-1.5 transition-all duration-200"
-                      >
-                        <CheckCircle2 className="w-4 h-4 text-white" />
-                        <span>Approve & Release</span>
-                      </button>
-                    </>
-                  )}
+                {/* Mathematical logs */}
+                <div className="glass-card-dark text-white rounded-3xl p-6 shadow-2xl flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-sm font-extrabold text-white border-b border-white/10 pb-2 mb-4 flex items-center space-x-1.5">
+                      <Users className="w-4 h-4 text-gold" />
+                      <span>Wolfram Succession Audit Trace</span>
+                    </h3>
+                    <WolframAuditViewer
+                      wolframCode={`(* HSA Succession Audit Logs *)\nDeceased = "Ramesh Kumar Senior";\nHeirs = {"Savitri Devi", "Ramesh Kumar Jr", "Sunita Kumari"};\nShareCount = Length[Heirs]; (* 3 *)\nBasePercentage = 1.0 / ShareCount * 100;\nApportionment = Table[{Heirs[[i]], BasePercentage}, {i, 1, ShareCount}];\nPrint[Apportionment];\n(* Output: Each heir receives 33.33% under HSA Class I *)`}
+                      eligibility={selectedClaim.eligibility}
+                      shares={selectedClaim.familyMembers || []}
+                    />
+                  </div>
+
+                  {/* Approve/Reject Controls */}
+                  <div className="flex gap-3 pt-4 border-t border-white/10 mt-4">
+                    {selectedClaim.status === 'Approved' ? (
+                      <div className="w-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold p-3.5 rounded-xl text-xs text-center flex items-center justify-center space-x-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                        <span>Claim Approved & Fund Release Authorized</span>
+                      </div>
+                    ) : (
+                      <>
+                        <button 
+                          onClick={() => handleUpdateClaimStatus('Rejected')}
+                          disabled={isActioning}
+                          className="border border-red-500/50 text-red-400 hover:bg-red-500/10 font-bold py-3 px-4 rounded-xl text-xs flex-1 cursor-pointer flex items-center justify-center space-x-1.5 transition-all duration-200"
+                        >
+                          <XCircle className="w-4 h-4" />
+                          <span>Reject Claim</span>
+                        </button>
+                        <button 
+                          onClick={() => handleUpdateClaimStatus('Approved')}
+                          disabled={isActioning || !hasAffidavit}
+                          className={`font-bold py-3 px-4 rounded-xl text-xs flex-1 shadow flex items-center justify-center space-x-1.5 transition-all duration-200 ${
+                            hasAffidavit 
+                              ? "bg-[#075E54] hover:bg-[#128C7E] text-white cursor-pointer" 
+                              : "bg-slate-300 text-slate-500 cursor-not-allowed border border-slate-200"
+                          }`}
+                        >
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>{hasAffidavit ? "Approve & Release" : "Awaiting Affidavit"}</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
+
               </div>
 
             </div>
-
-          </div>
-        )}
+          );
+        })()}
 
       </main>
 
