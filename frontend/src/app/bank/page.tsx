@@ -4,9 +4,11 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   Landmark, ShieldCheck, FileText, CheckCircle2, XCircle, 
-  HelpCircle, ArrowLeft, RefreshCw, Eye, Download, Users 
+  ArrowLeft, RefreshCw, Users 
 } from "lucide-react";
 import FamilyTreeGraph from "../../components/FamilyTreeGraph";
+import WolframAuditViewer from "../../components/WolframAuditViewer";
+import SecurityBadge from "../../components/SecurityBadge";
 
 export default function BankEnterprisePortal() {
   const [claims, setClaims] = useState<any[]>([]);
@@ -221,61 +223,11 @@ export default function BankEnterprisePortal() {
 
               <div className="space-y-4">
                 
-                {/* L1 Card */}
-                <div className="border border-slate-200 rounded-2xl p-4 flex items-start justify-between bg-slate-50">
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs bg-primary text-white px-2 py-0.5 rounded font-bold">L1</span>
-                      <h4 className="text-xs font-extrabold text-primary">Aadhaar Biometric eKYC</h4>
-                    </div>
-                    <p className="text-xs text-slate-500">Demographic Match: 100% OK. Biometric status verified via OTP.</p>
-                  </div>
-                  <span className="text-xs font-extrabold text-emerald-600 flex items-center space-x-1">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span>VERIFIED</span>
-                  </span>
-                </div>
-
-                {/* L2 Card */}
-                <div className="border border-slate-200 rounded-2xl p-4 flex items-start justify-between bg-slate-50">
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs bg-primary text-white px-2 py-0.5 rounded font-bold">L2</span>
-                      <h4 className="text-xs font-extrabold text-primary">DigiLocker Death Record Pull</h4>
-                    </div>
-                    <p className="text-xs text-slate-500">Registrar Births/Deaths API response match. Certificate No: DEATH-2026-9081.</p>
-                  </div>
-                  <span className="text-xs font-extrabold text-emerald-600 flex items-center space-x-1">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span>VERIFIED</span>
-                  </span>
-                </div>
-
-                {/* L3 Card */}
-                <div className="border border-slate-200 rounded-2xl p-4 flex items-start justify-between bg-slate-50">
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs bg-primary text-white px-2 py-0.5 rounded font-bold">L3</span>
-                      <h4 className="text-xs font-extrabold text-primary">Automated Indemnity Bond Protection</h4>
-                    </div>
-                    <p className="text-xs text-slate-500">Protects bank officers from liability and duplicate claimant lawsuits.</p>
-                  </div>
-                  <span className={`text-xs font-extrabold flex items-center space-x-1 ${
-                    selectedClaim.status === 'Approved' ? 'text-emerald-600' : 'text-amber-500'
-                  }`}>
-                    {selectedClaim.status === 'Approved' ? (
-                      <>
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                        <span>EXECUTED</span>
-                      </>
-                    ) : (
-                      <>
-                        <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-500" />
-                        <span>PENDING REVIEW</span>
-                      </>
-                    )}
-                  </span>
-                </div>
+                <SecurityBadge
+                  l1Status="Verified"
+                  l2Status="Verified"
+                  l3Status={selectedClaim.status === 'Approved' ? 'Verified' : 'Pending'}
+                />
 
               </div>
             </div>
@@ -294,16 +246,15 @@ export default function BankEnterprisePortal() {
               {/* Mathematical logs */}
               <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md flex flex-col justify-between">
                 <div>
-                  <h3 className="text-sm font-extrabold text-primary border-b border-slate-100 pb-2 mb-3 flex items-center space-x-1.5">
+                  <h3 className="text-sm font-extrabold text-primary border-b border-slate-100 pb-2 mb-4 flex items-center space-x-1.5">
                     <Users className="w-4 h-4 text-gold" />
-                    <span>Succession Audit Trace</span>
+                    <span>Wolfram Succession Audit Trace</span>
                   </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                    Audited with Wolfram Graph computation using immediate paths of Class I inheritance under the Hindu Succession Act.
-                  </p>
-                  <pre className="text-[7.5px] leading-relaxed text-slate-500 font-mono bg-slate-50 p-2.5 rounded-lg border border-slate-200 overflow-x-auto max-h-36">
-                    {`(* HSA Succession Audit Logs *)\nDeceased = "Ramesh Kumar Senior";\nHeirs = {"Savitri Devi", "Ramesh Kumar Jr", "Sunita Kumari"};\nShareCount = Length[Heirs]; (* 3 *)\nBasePercentage = 1.0 / ShareCount * 100;\nApportionment = Table[{Heirs[[i]], BasePercentage}, {i, 1, ShareCount}];\nPrint[Apportionment];\n(* Output: {"Savitri Devi" -> 33.33%, "Ramesh Kumar Jr" -> 33.33%, "Sunita Kumari" -> 33.33%} *)`}
-                  </pre>
+                  <WolframAuditViewer
+                    wolframCode={`(* HSA Succession Audit Logs *)\nDeceased = "Ramesh Kumar Senior";\nHeirs = {"Savitri Devi", "Ramesh Kumar Jr", "Sunita Kumari"};\nShareCount = Length[Heirs]; (* 3 *)\nBasePercentage = 1.0 / ShareCount * 100;\nApportionment = Table[{Heirs[[i]], BasePercentage}, {i, 1, ShareCount}];\nPrint[Apportionment];\n(* Output: Each heir receives 33.33% under HSA Class I *)`}
+                    eligibility={selectedClaim.eligibility}
+                    shares={selectedClaim.familyMembers || []}
+                  />
                 </div>
 
                 {/* Approve/Reject Controls */}

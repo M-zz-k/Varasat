@@ -3,10 +3,12 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
-  BarChart3, Calendar, FileText, ArrowDownToLine, Check, 
-  HelpCircle, ArrowLeft, Landmark, ShieldCheck, Wallet, RefreshCw 
+  BarChart3, FileText, ArrowDownToLine,
+  ArrowLeft, RefreshCw, Wallet 
 } from "lucide-react";
 import FamilyTreeGraph from "../../components/FamilyTreeGraph";
+import DashboardAnalytics from "../../components/DashboardAnalytics";
+import SecurityBadge from "../../components/SecurityBadge";
 
 export default function ClaimantDashboard() {
   const [claims, setClaims] = useState<any[]>([]);
@@ -199,6 +201,19 @@ export default function ClaimantDashboard() {
       {/* Main Grid */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
+        {/* Financial Accruals analytics card */}
+          {selectedClaim && (
+            <div className="lg:col-span-3 mb-2">
+              <DashboardAnalytics claimSummary={{
+                totalRecoverable: selectedClaim.financialProjections?.totalWealth || selectedClaim.asset?.amount || 0,
+                principal: selectedClaim.financialProjections?.principal || selectedClaim.asset?.amount || 0,
+                accruedInterest: selectedClaim.financialProjections?.accruedInterest || 0,
+                track: selectedClaim.track === 'Success_Fee' ? 'Track 2 — 0.5% Success Fee' : 'Track 1 — Free Social Impact',
+                status: selectedClaim.status.replace('_', ' ')
+              }} />
+            </div>
+          )}
+
         {/* Left Side: Claims List and Routing Tracks */}
         <div className="lg:col-span-1 space-y-6">
           <h2 className="text-xl font-bold text-primary flex items-center space-x-2">
