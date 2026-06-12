@@ -221,7 +221,7 @@ export default function BankEnterprisePortal() {
                 className={`border-2 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover-lift ${
                   selectedClaim?.id === claim.id 
                     ? "glass-card-dark text-white border-gold shadow-[0_15px_30px_rgba(212,175,55,0.15)]" 
-                    : "glass-card text-[#0A2540] border-[#D4AF37]/20 hover:border-[#D4AF37]/45"
+                    : "glass-card-dark text-white/80 border-gold/30 hover:border-gold/60"
                 }`}
               >
                 <div className="flex justify-between items-start">
@@ -236,15 +236,15 @@ export default function BankEnterprisePortal() {
                 </div>
                 
                 <h3 className="font-extrabold text-base mt-3">{claim.claimant?.name}</h3>
-                <p className={`text-xs mt-1 ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-500'}`}>Deceased: Ramesh Kumar Senior</p>
+                <p className={`text-xs mt-1 ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-400'}`}>Deceased: Ramesh Kumar Senior</p>
                 
-                <div className={`flex justify-between items-center mt-4 border-t pt-3 ${selectedClaim?.id === claim.id ? 'border-white/10' : 'border-[#0A2540]/10'}`}>
+                <div className={`flex justify-between items-center mt-4 border-t pt-3 ${selectedClaim?.id === claim.id ? 'border-white/20' : 'border-white/10'}`}>
                   <div>
-                    <span className={`text-[9px] block uppercase ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-500'}`}>Total Balance</span>
+                    <span className={`text-[9px] block uppercase ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-400'}`}>Total Balance</span>
                     <span className="font-bold text-sm">₹{claim.asset?.amount?.toLocaleString()}</span>
                   </div>
                   <div className="text-right">
-                    <span className={`text-[9px] block uppercase ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-500'}`}>Routing Track</span>
+                    <span className={`text-[9px] block uppercase ${selectedClaim?.id === claim.id ? 'text-slate-300' : 'text-slate-400'}`}>Routing Track</span>
                     <span className="text-xs font-bold text-gold">{claim.track ? claim.track.replace('_', ' ') : ''}</span>
                   </div>
                 </div>
