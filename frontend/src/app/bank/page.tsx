@@ -173,16 +173,15 @@ export default function BankEnterprisePortal() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary via-[#0f2e4e] to-primary flex flex-col justify-center items-center">
+      <div className="min-h-screen bg-white flex flex-col justify-center items-center">
         <RefreshCw className="w-10 h-10 text-gold animate-spin mb-3" />
-        <span className="text-sm font-semibold text-white/90">Loading partner portal queues...</span>
+        <span className="text-sm font-semibold text-primary/85">Loading partner portal queues...</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary via-[#0f2e4e] to-primary text-white flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
-      <ParticleBackground />
+    <div className="min-h-screen bg-white text-slate-800 flex flex-col justify-between selection:bg-gold selection:text-primary relative overflow-hidden">
       
       {/* Header */}
       <header className="border-b border-gold/20 bg-primary/95 text-white sticky top-0 z-50 px-6 py-4 shadow-md">
@@ -208,7 +207,7 @@ export default function BankEnterprisePortal() {
         
         {/* Left Side: Claims Queue */}
         <div className="lg:col-span-1 space-y-6">
-          <h2 className="text-xl font-bold text-white flex items-center space-x-2">
+          <h2 className="text-xl font-bold text-[#0A2540] flex items-center space-x-2">
             <Landmark className="w-5 h-5 text-gold float" />
             <span>Active Claims Queue</span>
           </h2>
@@ -352,7 +351,7 @@ export default function BankEnterprisePortal() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 bg-primary/40 px-6 py-6 text-center text-xs text-slate-400 mt-10">
+      <footer className="border-t border-slate-200 bg-slate-50 px-6 py-6 text-center text-xs text-slate-500 mt-10">
         <p>© 2026 Varasat Partner Enterprise Portal. Integrated with RBI DBR systems.</p>
       </footer>
     </div>
